@@ -47,6 +47,9 @@ build/Release
 # Dependency directories
 node_modules/
 
+# Build output
+dist/
+
 # Optional npm cache directory
 .npm
 
@@ -67,3 +70,6 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# macOS metadata
+.DS_Store

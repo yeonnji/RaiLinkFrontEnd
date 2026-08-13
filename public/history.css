@@ -460,7 +460,8 @@
   padding-right: clamp(2px, 0.8vw, 12px);
 }
 
-.pagination a {
+.pagination a,
+.pagination button {
   width: clamp(29px, 2.25vw, 33px);
   aspect-ratio: 1;
   display: grid;
@@ -474,7 +475,8 @@
   text-decoration: none;
 }
 
-.pagination a.active {
+.pagination a.active,
+.pagination button.active {
   border-color: var(--blue);
   background: var(--blue);
   color: #fff;
@@ -488,6 +490,11 @@
 
 .pagination .page-arrow.disabled {
   color: #96a9b7;
+}
+
+.pagination .page-arrow:disabled {
+  color: #96a9b7;
+  cursor: default;
 }
 
 @media (max-width: 1180px) {
