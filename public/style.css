@@ -13,6 +13,10 @@
   --header-height: clamp(72px, 10.2vh, 98px);
 }
 
+@view-transition {
+  navigation: auto;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -199,13 +203,14 @@ button {
   color: #bde6f7;
   text-decoration: none;
   font-size: clamp(9px, 0.72vw, 11px);
+  transition: color 180ms ease;
 }
 
 .nav-item.active {
   color: var(--blue);
 }
 
-.nav-item.active::before {
+.nav-item::before {
   content: "";
   position: absolute;
   left: 50%;
@@ -215,6 +220,18 @@ button {
   transform: translate(-50%, -50%);
   border-radius: 13px;
   background: #fff;
+  opacity: 0;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.nav-item.active::before {
+  opacity: 1;
+}
+
+.nav-item:not(.active):hover,
+.nav-item:not(.active):focus-visible,
+.nav-item:not(.active):active {
+  color: #fff;
 }
 
 .nav-item > * {
@@ -227,15 +244,20 @@ button {
   display: block;
   width: 23px;
   height: 23px;
+  transition: transform 160ms ease;
 }
 
-.shipment-design-icon {
-  width: 21px;
-  height: 21px;
-  flex: 0 0 21px;
+.train-menu-icon {
+  width: 30px;
+  height: 24px;
+  flex: 0 0 24px;
   background: currentColor;
-  -webkit-mask: url("./assets/shipment-design.svg") center / 21px 21px no-repeat;
-  mask: url("./assets/shipment-design.svg") center / 21px 21px no-repeat;
+  -webkit-mask: url("./assets/menu-train.svg") center / contain no-repeat;
+  mask: url("./assets/menu-train.svg") center / contain no-repeat;
+}
+
+.nav-item:active .nav-symbol {
+  transform: scale(0.9);
 }
 
 .history-symbol {
