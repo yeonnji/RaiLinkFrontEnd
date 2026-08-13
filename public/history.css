@@ -32,7 +32,7 @@
 .history-intro h1 {
   margin: 0 0 min(0.8vh, 8px);
   color: #122e46;
-  font-size: clamp(24px, 2.25vw, 34px);
+  font-size: var(--heading-page);
   line-height: 1;
   letter-spacing: -0.04em;
 }
@@ -264,7 +264,7 @@
   align-self: center;
   margin: 0;
   color: #16344d;
-  font-size: clamp(12px, 1vw, 16px);
+  font-size: var(--heading-section);
 }
 
 .records-section h2 small {

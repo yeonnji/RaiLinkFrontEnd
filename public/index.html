@@ -34,7 +34,7 @@
         </div>
       </header>
 
-      <div class="workspace">
+      <div class="workspace" id="dashboard-workspace">
         <nav class="primary-nav" aria-label="주요 메뉴">
           <a class="nav-item active" href="./index.html" aria-current="page">
             <span class="nav-symbol train-menu-icon" aria-hidden="true"></span>
@@ -51,7 +51,7 @@
           <span class="railink-seal">RAILINK</span>
         </nav>
 
-        <aside class="input-panel">
+        <aside class="input-panel" id="shipment-panel">
           <section class="shipment-section" aria-labelledby="shipment-title">
             <span class="eyebrow">SHIPMENT INPUT</span>
             <h1 id="shipment-title">운송 조건</h1>
@@ -164,11 +164,19 @@
           </section>
         </aside>
 
-        <main class="content" aria-label="운송 경로 분석 결과">
-          <button class="collapse-tab" type="button" aria-label="운송 조건 패널 접기">
-            <b aria-hidden="true">‹</b><span>COLLAPSE</span>
-          </button>
+        <button
+          class="collapse-tab"
+          id="panel-toggle"
+          type="button"
+          aria-label="운송 조건 패널 접기"
+          aria-controls="shipment-panel"
+          aria-expanded="true"
+        >
+          <img src="./assets/panel-collapse-toggle.svg" alt="" aria-hidden="true" />
+          <span class="collapse-chevron" aria-hidden="true"></span>
+        </button>
 
+        <main class="content" aria-label="운송 경로 분석 결과">
           <section class="comparison-panel" aria-labelledby="comparison-title">
             <header class="panel-heading comparison-heading">
               <h2 id="comparison-title">추천 운송 경로 · 비용 우선</h2>
