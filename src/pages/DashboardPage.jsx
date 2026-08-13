@@ -755,8 +755,10 @@ export default function DashboardPage({ initialHistoryDetail, onNavigate }) {
           aria-expanded={!panelCollapsed}
           onClick={() => setPanelCollapsed((current) => !current)}
         >
-          <img src="/assets/panel-collapse-toggle.svg" alt="" aria-hidden="true" />
           <span className="collapse-chevron" aria-hidden="true" />
+          <span className="collapse-label" aria-hidden="true">
+            {panelCollapsed ? "EXPAND" : "COLLAPSE"}
+          </span>
         </button>
 
         <main
