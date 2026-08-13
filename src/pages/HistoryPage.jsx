@@ -245,13 +245,16 @@ function HistoryRow({ isOpening, onOpen, record }) {
   return (
     <article className="history-row">
       <div className="history-route-cell">
-        <span className={`route-badge ${road ? "road-badge" : "rail-badge"}`}>{road ? "도로 추천" : "철도 추천"}</span>
         <div className="history-route-line">
           <strong title={record.originName}>{record.originName || "-"}</strong>
           <Track type={track} />
           <strong title={record.destinationName}>{record.destinationName || "-"}</strong>
         </div>
       </div>
+      <span className={`route-badge ${road ? "road-badge" : "rail-badge"}`}>
+        {road ? "도로 추천" : "철도 추천"}
+      </span>
+      <strong className="recept-number" title={record.receptNo}>{record.receptNo || "-"}</strong>
       <strong className="cargo-weight">{record.cargoWeightTon.toLocaleString("ko-KR")}t</strong>
       <div className={`transport-plan${road ? " road-plan" : ""}`}>
         <small>{plan.legs}</small><strong>{plan.share}</strong>
@@ -466,6 +469,8 @@ export default function HistoryPage({ onNavigate }) {
 
             <div className="history-columns" aria-hidden="true">
               <span>분석 경로</span>
+              <span>추천 결과</span>
+              <span>접수번호</span>
               <span>화물 중량</span>
               <span>추천 운송안</span>
               <span>비용 절감</span>
