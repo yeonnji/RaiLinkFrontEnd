@@ -3,6 +3,9 @@ import { withApiLoading } from "./request.js";
 const shippingRecommendationEndpoint =
   import.meta.env.VITE_SHIPPING_API_PATH || "/api/Shipping/recommend";
 
+const getErrorText = (value) =>
+  typeof value === "string" ? value.trim() : "";
+
 export async function requestShippingRecommendation(payload, { signal } = {}) {
   return withApiLoading(async () => {
   const response = await fetch(shippingRecommendationEndpoint, {
@@ -24,8 +27,14 @@ export async function requestShippingRecommendation(payload, { signal } = {}) {
   }
 
   if (!response.ok) {
+    const message =
+      getErrorText(data?.message) ||
+      getErrorText(data?.error) ||
+      `추천 요청에 실패했습니다. (${response.status})`;
+    const detail = getErrorText(data?.detail);
+
     throw new Error(
-      data?.message || data?.error || `추천 요청에 실패했습니다. (${response.status})`,
+      detail && detail !== message ? `${message}\n${detail}` : message,
     );
   }
 

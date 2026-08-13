@@ -849,15 +849,13 @@ body.api-is-loading {
 }
 
 .api-feedback {
-  display: -webkit-box;
   margin: min(0.8vh, 8px) 0 0;
-  overflow: hidden;
   color: #c84b2c;
   font-size: clamp(10px, 0.72vw, 12px);
   font-weight: 700;
   line-height: 1.35;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
 }
 
 .generate-button strong {
