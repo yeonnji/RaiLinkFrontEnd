@@ -594,47 +594,19 @@ function DashboardEmptyState({ isLoading }) {
       className={`dashboard-empty-state${isLoading ? " is-calculating" : ""}`}
       aria-live="polite"
     >
-      <div className="empty-dashboard-preview" aria-hidden="true">
-        <div className="empty-preview-panel preview-route-panel">
-          <div className="preview-panel-heading"><i /><span /><b /></div>
-          <div className="preview-route-map">
-            <span className="preview-route-track"><i /><i /><i /><i /></span>
-            <b className="preview-train"><img src="/assets/menu-train.svg" alt="" /></b>
-          </div>
-          <div className="preview-metrics"><span /><span /><span /><span /></div>
-        </div>
-        <div className="empty-preview-lower">
-          <div className="empty-preview-panel preview-table-panel">
-            <div className="preview-panel-heading"><i /><span /><b /></div>
-            <span /><span /><span /><span />
-          </div>
-          <div className="empty-preview-panel preview-ticket-panel">
-            <small />
-            <strong />
-            <span />
-            <div><i /><i /></div>
-          </div>
-        </div>
-        <div className="preview-ai-panel"><span /><i /><b /></div>
-      </div>
-
-      <div className="empty-state-callout">
-        <div className="empty-callout-heading">
-          <span className="empty-callout-icon" aria-hidden="true">
-            <img src="/assets/menu-train.svg" alt="" />
+      <div className="empty-state-inner">
+        <span className="empty-brand-orbit" aria-hidden="true">
+          <span className="empty-brand-symbol">
+            <img src="/assets/railink-logo-train-track.png" alt="" />
           </span>
-          <div>
-            <span className="empty-callout-status">
-              {isLoading && <i />}{isLoading ? "운송안 분석 중" : "운송안 분석"}
-            </span>
-            <h1>{isLoading ? "운송 경로를 계산하고 있습니다" : "운송 조건을 입력해 주세요"}</h1>
-          </div>
-        </div>
+        </span>
+        <h1>{isLoading ? "운송안을 분석하고 있습니다" : "표시할 데이터가 없습니다"}</h1>
         <p>
           {isLoading
             ? "도로와 철도의 비용, 소요 시간, 탄소 배출량을 비교하고 있습니다."
-            : "출발지, 도착지, 화물 중량과 운송일을 입력하면 분석 결과가 이곳에 표시됩니다."}
+            : "운송 조건을 입력하고 ‘AI 추천 운송안 생성’을 진행해 주세요."}
         </p>
+        <span className="empty-state-divider" aria-hidden="true"><i /></span>
       </div>
     </section>
   );
