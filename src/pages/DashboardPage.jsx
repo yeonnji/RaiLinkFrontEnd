@@ -581,10 +581,10 @@ function Recommendation({ result }) {
         <strong>{result.recommendation?.recommended_name || getModeName(getRecommendedMode(result))}을 추천합니다</strong>
       </span>
       <i />
-      <span className="recommendation-copy">
-        <span title={explanation}>{explanation}</span>
-        <strong>{reason}</strong>
-      </span>
+      <div className="recommendation-copy">
+        <p className="recommendation-comment" tabIndex="0">{explanation}</p>
+        <strong className="recommendation-summary" title={reason}>{reason}</strong>
+      </div>
     </section>
   );
 }
