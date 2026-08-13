@@ -8,13 +8,6 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
-        "run": {
-          "serviceId": "railink-run",
-          "region": "asia-northeast3"
-        }
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
