@@ -59,7 +59,12 @@ export function Topbar({ estimate, history = false, onNavigate }) {
       <div className="topbar-content">
         <div className="brand-copy">
           <span>철도 중심 복합물류 AI 의사결정 플랫폼</span>
-          <strong>RAILINK</strong>
+          <img
+            src="/assets/railink-logo-train-track.png"
+            alt="RAILINK"
+            width="1449"
+            height="267"
+          />
         </div>
 
         <div className="topbar-status">

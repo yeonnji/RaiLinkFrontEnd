@@ -115,11 +115,13 @@ button {
   font-weight: 800;
 }
 
-.brand-copy strong {
-  color: #142c42;
-  font-size: clamp(21px, 1.85vw, 27px);
-  line-height: 1;
-  letter-spacing: 0.01em;
+.brand-copy img {
+  width: auto;
+  max-width: clamp(130px, 12.25vw, 175px);
+  height: clamp(22px, 3vh, 32px);
+  display: block;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .topbar-status {
