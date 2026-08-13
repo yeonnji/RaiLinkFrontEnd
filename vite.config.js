@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 const shippingApiProxy = {
-  target: "https://cloudrun-test-530608231336.asia-northeast3.run.app",
+  target: "https://railink-run-530608231336.asia-northeast3.run.app",
   changeOrigin: true,
   secure: true,
 };

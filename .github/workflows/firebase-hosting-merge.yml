@@ -18,7 +18,7 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          VITE_SHIPPING_API_PATH: https://cloudrun-test-530608231336.asia-northeast3.run.app/api/Shipping/recommend
+          VITE_SHIPPING_API_PATH: https://railink-run-530608231336.asia-northeast3.run.app/api/Shipping/recommend
           VITE_HISTORY_SUMMARY_API_PATH: https://railink-run-530608231336.asia-northeast3.run.app/api/history/summary
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
