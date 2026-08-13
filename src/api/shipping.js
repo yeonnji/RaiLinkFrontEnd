@@ -1,7 +1,10 @@
+import { withApiLoading } from "./request.js";
+
 const shippingRecommendationEndpoint =
   import.meta.env.VITE_SHIPPING_API_PATH || "/api/Shipping/recommend";
 
 export async function requestShippingRecommendation(payload, { signal } = {}) {
+  return withApiLoading(async () => {
   const response = await fetch(shippingRecommendationEndpoint, {
     method: "POST",
     headers: {
@@ -31,4 +34,5 @@ export async function requestShippingRecommendation(payload, { signal } = {}) {
   }
 
   return data;
+  });
 }

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import ApiLoadingOverlay from "./components/ApiLoadingOverlay.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import HistoryPage from "./pages/HistoryPage.jsx";
 
@@ -33,13 +34,18 @@ export default function App() {
     setPage(nextPage);
   }, []);
 
-  return page === "history" ? (
-    <HistoryPage onNavigate={navigate} />
-  ) : (
-    <DashboardPage
-      initialHistoryDetail={historyDetail}
-      key={historyDetail?.receptNo || "new-analysis"}
-      onNavigate={navigate}
-    />
+  return (
+    <>
+      {page === "history" ? (
+        <HistoryPage onNavigate={navigate} />
+      ) : (
+        <DashboardPage
+          initialHistoryDetail={historyDetail}
+          key={historyDetail?.receptNo || "new-analysis"}
+          onNavigate={navigate}
+        />
+      )}
+      <ApiLoadingOverlay />
+    </>
   );
 }

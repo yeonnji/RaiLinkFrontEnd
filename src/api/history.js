@@ -1,3 +1,5 @@
+import { withApiLoading } from "./request.js";
+
 const historySummaryEndpoint =
   import.meta.env.VITE_HISTORY_SUMMARY_API_PATH || "/api/history/summary";
 const historyListEndpoint =
@@ -21,6 +23,7 @@ const parseJsonObject = (value) => {
 };
 
 export async function requestHistorySummary({ signal } = {}) {
+  return withApiLoading(async () => {
   const response = await fetch(historySummaryEndpoint, {
     method: "GET",
     cache: "no-store",
@@ -59,6 +62,7 @@ export async function requestHistorySummary({ signal } = {}) {
         ? data.latestAnalysis
         : null,
   };
+  });
 }
 
 export async function requestHistoryList(
@@ -73,6 +77,7 @@ export async function requestHistoryList(
   } = {},
   { signal } = {},
 ) {
+  return withApiLoading(async () => {
   const searchParams = new URLSearchParams({
     period: String(period),
     transportMode,
@@ -133,9 +138,11 @@ export async function requestHistoryList(
       hasNext: Boolean(data.pagination.hasNext),
     },
   };
+  });
 }
 
 export async function requestHistoryDetail(receptNo, { signal } = {}) {
+  return withApiLoading(async () => {
   if (!receptNo) {
     throw new Error("상세 조회에 필요한 접수번호가 없습니다.");
   }
@@ -176,4 +183,5 @@ export async function requestHistoryDetail(receptNo, { signal } = {}) {
     inputJson,
     outputJson,
   };
+  });
 }
