@@ -1843,8 +1843,7 @@ body.api-is-loading {
   min-height: 0;
   height: 100%;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: min(0.8vh, 8px);
+  grid-template-rows: minmax(0, 1fr);
   padding: 3px 0;
   color: #b7c8d4;
   font-size: clamp(10px, 0.76vw, 12px);
@@ -1876,14 +1875,6 @@ body.api-is-loading {
 .recommendation-comment::-webkit-scrollbar-thumb {
   border-radius: 999px;
   background: #5a7890;
-}
-
-.recommendation-summary {
-  min-width: 0;
-  overflow: hidden;
-  color: #fff;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .pdf-report-stage {

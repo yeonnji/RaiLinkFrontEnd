@@ -569,7 +569,6 @@ function EstimateTicket({ downloadError, isDownloading, onDownload, result }) {
 }
 
 function Recommendation({ result }) {
-  const reason = buildRecommendationReason(result);
   const explanation = getCleanExplanation(result);
 
   return (
@@ -582,7 +581,6 @@ function Recommendation({ result }) {
       <i />
       <div className="recommendation-copy">
         <p className="recommendation-comment" tabIndex="0">{explanation}</p>
-        <strong className="recommendation-summary" title={reason}>{reason}</strong>
       </div>
     </section>
   );
