@@ -22,6 +22,7 @@ jobs:
         env:
           VITE_SHIPPING_API_PATH: https://railink-run-530608231336.asia-northeast3.run.app/api/Shipping/recommend
           VITE_HISTORY_SUMMARY_API_PATH: https://railink-run-530608231336.asia-northeast3.run.app/api/history/summary
+          VITE_HISTORY_LIST_API_PATH: https://railink-run-530608231336.asia-northeast3.run.app/api/history
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
