@@ -1,20 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-const storageKey = "railink-shipment-conditions";
 const defaultShipment = {
-  origin: "서울역",
-  destination: "부산항국제여객터미널",
-  weight: "50",
-  departureDate: "2026-08-15",
-};
-
-const readStoredShipment = () => {
-  try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
-    return saved ? { ...defaultShipment, ...saved } : defaultShipment;
-  } catch {
-    return defaultShipment;
-  }
+  origin: "",
+  destination: "",
+  weight: "",
+  departureDate: "",
 };
 
 function FieldRow({ accent = false, children, value }) {
@@ -35,7 +25,7 @@ export default function ShipmentPanel({
   onSubmit,
 }) {
   const [shipment, setShipment] = useState(() => ({
-    ...readStoredShipment(),
+    ...defaultShipment,
     ...(initialShipment || {}),
   }));
   const [priority, setPriority] = useState(
@@ -49,11 +39,11 @@ export default function ShipmentPanel({
 
   useEffect(() => {
     try {
-      localStorage.setItem(storageKey, JSON.stringify(shipment));
+      localStorage.removeItem("railink-shipment-conditions");
     } catch {
-      // 브라우저 저장소가 제한된 환경에서도 입력 기능은 유지합니다.
+      // 저장소 접근이 제한된 환경에서도 빈 입력 화면을 유지합니다.
     }
-  }, [shipment]);
+  }, []);
 
   useEffect(() => {
     if (panelRef.current) panelRef.current.inert = collapsed;
@@ -116,7 +106,7 @@ export default function ShipmentPanel({
       <section className="shipment-section" aria-labelledby="shipment-title">
         <span className="eyebrow">SHIPMENT INPUT</span>
         <h1 id="shipment-title">운송 조건</h1>
-        <p className="help-text">검색어 입력 · 자동 저장됨</p>
+        <p className="help-text">필수 운송 정보를 입력해 주세요</p>
 
         <div className="field-list">
           <FieldRow accent value={shipment.origin}>
@@ -127,6 +117,7 @@ export default function ShipmentPanel({
                 type="text"
                 name="origin"
                 value={shipment.origin}
+                placeholder="출발지를 입력하세요"
                 autoComplete="organization"
                 required
                 aria-label="출발지"
@@ -143,6 +134,7 @@ export default function ShipmentPanel({
                 type="text"
                 name="destination"
                 value={shipment.destination}
+                placeholder="도착지를 입력하세요"
                 autoComplete="organization"
                 required
                 aria-label="도착지"
@@ -161,6 +153,7 @@ export default function ShipmentPanel({
                     type="number"
                     name="weight"
                     value={shipment.weight}
+                    placeholder="예: 20"
                     min="1"
                     max="999"
                     step="1"
@@ -183,17 +176,22 @@ export default function ShipmentPanel({
             <div className="field-box date-field">
               <label className="date-control" htmlFor="departure-date">
                 <small>희망 출발일</small>
-                <input
-                  className="field-input date-input"
-                  id="departure-date"
-                  ref={dateInputRef}
-                  type="date"
-                  name="departureDate"
-                  value={shipment.departureDate}
-                  required
-                  aria-label="희망 출발일"
-                  onChange={(event) => updateShipment("departureDate", event.target.value)}
-                />
+                <span className="date-input-wrap">
+                  <input
+                    className="field-input date-input"
+                    id="departure-date"
+                    ref={dateInputRef}
+                    type="date"
+                    name="departureDate"
+                    value={shipment.departureDate}
+                    required
+                    aria-label="희망 출발일"
+                    onChange={(event) => updateShipment("departureDate", event.target.value)}
+                  />
+                  {!shipment.departureDate && (
+                    <span className="date-placeholder" aria-hidden="true">날짜 선택</span>
+                  )}
+                </span>
               </label>
               <button
                 className="calendar-button"

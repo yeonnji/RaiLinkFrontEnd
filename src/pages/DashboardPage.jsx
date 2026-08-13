@@ -2,7 +2,6 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import { requestShippingRecommendation } from "../api/shipping.js";
 import { DashboardFrame, PrimaryNav } from "../components/AppShell.jsx";
 import ShipmentPanel from "../components/ShipmentPanel.jsx";
-import { defaultShippingResult } from "../data/defaultShippingResult.js";
 import {
   formatDuration,
   formatKm,
@@ -589,6 +588,58 @@ function Recommendation({ result }) {
   );
 }
 
+function DashboardEmptyState({ isLoading }) {
+  return (
+    <section
+      className={`dashboard-empty-state${isLoading ? " is-calculating" : ""}`}
+      aria-live="polite"
+    >
+      <div className="empty-dashboard-preview" aria-hidden="true">
+        <div className="empty-preview-panel preview-route-panel">
+          <div className="preview-panel-heading"><i /><span /><b /></div>
+          <div className="preview-route-map">
+            <span className="preview-route-track"><i /><i /><i /><i /></span>
+            <b className="preview-train"><img src="/assets/menu-train.svg" alt="" /></b>
+          </div>
+          <div className="preview-metrics"><span /><span /><span /><span /></div>
+        </div>
+        <div className="empty-preview-lower">
+          <div className="empty-preview-panel preview-table-panel">
+            <div className="preview-panel-heading"><i /><span /><b /></div>
+            <span /><span /><span /><span />
+          </div>
+          <div className="empty-preview-panel preview-ticket-panel">
+            <small />
+            <strong />
+            <span />
+            <div><i /><i /></div>
+          </div>
+        </div>
+        <div className="preview-ai-panel"><span /><i /><b /></div>
+      </div>
+
+      <div className="empty-state-callout">
+        <div className="empty-callout-heading">
+          <span className="empty-callout-icon" aria-hidden="true">
+            <img src="/assets/menu-train.svg" alt="" />
+          </span>
+          <div>
+            <span className="empty-callout-status">
+              {isLoading && <i />}{isLoading ? "운송안 분석 중" : "운송안 분석"}
+            </span>
+            <h1>{isLoading ? "운송 경로를 계산하고 있습니다" : "운송 조건을 입력해 주세요"}</h1>
+          </div>
+        </div>
+        <p>
+          {isLoading
+            ? "도로와 철도의 비용, 소요 시간, 탄소 배출량을 비교하고 있습니다."
+            : "출발지, 도착지, 화물 중량과 운송일을 입력하면 분석 결과가 이곳에 표시됩니다."}
+        </p>
+      </div>
+    </section>
+  );
+}
+
 const getHistoryShipment = (historyDetail) => {
   if (!historyDetail) return null;
 
@@ -608,7 +659,7 @@ const getHistoryShipment = (historyDetail) => {
 };
 
 export default function DashboardPage({ initialHistoryDetail, onNavigate }) {
-  const initialResult = initialHistoryDetail?.outputJson || defaultShippingResult;
+  const initialResult = initialHistoryDetail?.outputJson || null;
   const initialShipment = getHistoryShipment(initialHistoryDetail);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [result, setResult] = useState(initialResult);
@@ -659,7 +710,7 @@ export default function DashboardPage({ initialHistoryDetail, onNavigate }) {
   };
 
   const handlePdfDownload = async () => {
-    if (!pdfReportRef.current || isPdfDownloading) return;
+    if (!result || !pdfReportRef.current || isPdfDownloading) return;
 
     setIsPdfDownloading(true);
     setPdfDownloadError("");
@@ -720,7 +771,7 @@ export default function DashboardPage({ initialHistoryDetail, onNavigate }) {
         <ShipmentPanel
           collapsed={panelCollapsed}
           error={error}
-          initialPriority={initialHistoryDetail?.inputJson?.priority || initialResult.priority}
+          initialPriority={initialHistoryDetail?.inputJson?.priority || initialResult?.priority}
           initialShipment={initialShipment}
           isLoading={isLoading}
           onSubmit={handleRecommendationRequest}
@@ -739,24 +790,30 @@ export default function DashboardPage({ initialHistoryDetail, onNavigate }) {
         </button>
 
         <main
-          className={`content${isLoading ? " is-loading" : ""}`}
+          className={`content${result ? "" : " empty-content"}${isLoading ? " is-loading" : ""}`}
           aria-label="운송 경로 분석 결과"
           aria-busy={isLoading}
         >
-          <ComparisonPanel includeComparison={includeComparison} result={result} />
-          <div className="lower-grid">
-            <SchedulePanel result={result} />
-            <EstimateTicket
-              downloadError={pdfDownloadError}
-              isDownloading={isPdfDownloading}
-              onDownload={handlePdfDownload}
-              result={result}
-            />
-          </div>
-          <Recommendation result={result} />
+          {result ? (
+            <>
+              <ComparisonPanel includeComparison={includeComparison} result={result} />
+              <div className="lower-grid">
+                <SchedulePanel result={result} />
+                <EstimateTicket
+                  downloadError={pdfDownloadError}
+                  isDownloading={isPdfDownloading}
+                  onDownload={handlePdfDownload}
+                  result={result}
+                />
+              </div>
+              <Recommendation result={result} />
+            </>
+          ) : (
+            <DashboardEmptyState isLoading={isLoading} />
+          )}
         </main>
       </div>
-      <ShippingPdfReport ref={pdfReportRef} result={result} />
+      {result && <ShippingPdfReport ref={pdfReportRef} result={result} />}
     </DashboardFrame>
   );
 }

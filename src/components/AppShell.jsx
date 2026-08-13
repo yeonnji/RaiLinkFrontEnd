@@ -68,13 +68,13 @@ export function Topbar({ estimate, history = false, onNavigate }) {
         </div>
 
         <div className="topbar-status">
-          {!history && (
+          {!history && estimate && (
             <div className="estimate-id">
-              <strong>견적번호 {estimate?.receptNo || "KR-260806-0217"}</strong>
+              <strong>견적번호 {estimate.receptNo}</strong>
               <span>
-                {estimate?.analyzedAt
+                {estimate.analyzedAt
                   ? `${formatEstimateDate(estimate.analyzedAt)} 분석`
-                  : "2026.08.06 09:40 기준"}
+                  : "분석 결과"}
               </span>
             </div>
           )}
