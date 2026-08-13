@@ -139,6 +139,10 @@
   color: var(--green);
 }
 
+.summary-metric.negative-summary > strong {
+  color: var(--orange);
+}
+
 .recent-summary {
   gap: min(0.65vh, 6px);
 }
@@ -154,6 +158,10 @@
 .recent-summary > span {
   color: #8599a8;
   font-size: clamp(10px, 0.74vw, 12px);
+}
+
+.recent-summary.summary-error > strong {
+  color: var(--orange);
 }
 
 .history-filters {

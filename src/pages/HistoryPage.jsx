@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { requestHistorySummary } from "../api/history.js";
 import { DashboardFrame, PrimaryNav } from "../components/AppShell.jsx";
 
 const historyRecords = [
@@ -87,29 +88,84 @@ function Track({ type }) {
   return <span className={`mini-track ${type === "road" ? "road-direct-track" : "rail-direct-track"}`} />;
 }
 
-function HistorySummary() {
+const formatSummaryRate = (value) =>
+  Number(value || 0).toLocaleString("ko-KR", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+
+const formatLatestAnalysisTime = (value) => {
+  if (!value) return "";
+
+  const analyzedAt = new Date(value);
+  if (Number.isNaN(analyzedAt.getTime())) return "";
+
+  const now = new Date();
+  const isToday =
+    analyzedAt.getFullYear() === now.getFullYear() &&
+    analyzedAt.getMonth() === now.getMonth() &&
+    analyzedAt.getDate() === now.getDate();
+  const time = analyzedAt.toLocaleTimeString("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  if (isToday) return `오늘 ${time}`;
+
+  const date = analyzedAt.toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return `${date} ${time}`;
+};
+
+function HistorySummary({ error, isLoading, summary }) {
+  const latest = summary?.latestAnalysis;
+  const unavailableValue = isLoading || error ? "–" : null;
+  const costSavingRate = summary?.averageCostSavingRate || 0;
+  const carbonSavingRate = summary?.averageCarbonSavingRate || 0;
+
   return (
-    <section className="history-summary" aria-label="분석 요약">
+    <section
+      className="history-summary"
+      aria-busy={isLoading}
+      aria-label="분석 요약"
+    >
       <div className="summary-metric">
         <small>이번 주 분석</small>
-        <strong>24<em>건</em></strong>
+        <strong>{unavailableValue ?? summary?.weeklyAnalysisCount.toLocaleString("ko-KR") ?? 0}<em>건</em></strong>
       </div>
       <div className="summary-metric rail-summary">
         <small>철도 포함 추천</small>
-        <span><strong>16<em>건</em></strong><b>66.7%</b></span>
+        <span>
+          <strong>{unavailableValue ?? summary?.railRecommendationCount.toLocaleString("ko-KR") ?? 0}<em>건</em></strong>
+          <b>{unavailableValue ?? formatSummaryRate(summary?.railRecommendationRate)}%</b>
+        </span>
       </div>
-      <div className="summary-metric">
+      <div className={`summary-metric${costSavingRate < 0 ? " negative-summary" : ""}`}>
         <small>평균 비용 절감</small>
-        <strong>18.4<em>%</em></strong>
+        <strong>{unavailableValue ?? formatSummaryRate(costSavingRate)}<em>%</em></strong>
       </div>
-      <div className="summary-metric carbon-summary">
+      <div className={`summary-metric carbon-summary${carbonSavingRate < 0 ? " negative-summary" : ""}`}>
         <small>평균 탄소 절감</small>
-        <strong>64.8<em>%</em></strong>
+        <strong>{unavailableValue ?? formatSummaryRate(carbonSavingRate)}<em>%</em></strong>
       </div>
-      <div className="summary-metric recent-summary">
+      <div className={`summary-metric recent-summary${error ? " summary-error" : ""}`} title={error || undefined}>
         <small>최근 분석</small>
-        <strong>인천 남동공단 → 부산 신항</strong>
-        <span>오늘 14:32 · 20t</span>
+        {isLoading ? (
+          <strong>요약 정보를 불러오는 중입니다</strong>
+        ) : error ? (
+          <strong role="status">요약 정보를 불러오지 못했습니다</strong>
+        ) : latest ? (
+          <>
+            <strong>{latest.originName || "-"} → {latest.destinationName || "-"}</strong>
+            <span>{formatLatestAnalysisTime(latest.analyzedAt)} · {Number(latest.cargoWeightTon || 0).toLocaleString("ko-KR")}t</span>
+          </>
+        ) : (
+          <strong>아직 분석 기록이 없습니다</strong>
+        )}
       </div>
     </section>
   );
@@ -172,6 +228,34 @@ function HistoryRow({ record }) {
 export default function HistoryPage({ onNavigate }) {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [summary, setSummary] = useState(null);
+  const [summaryError, setSummaryError] = useState("");
+  const [isSummaryLoading, setIsSummaryLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadSummary = async () => {
+      setIsSummaryLoading(true);
+      setSummaryError("");
+
+      try {
+        const data = await requestHistorySummary({ signal: controller.signal });
+        setSummary(data);
+      } catch (requestError) {
+        if (requestError.name !== "AbortError") {
+          setSummaryError(requestError.message || "히스토리 요약 정보를 불러오지 못했습니다.");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsSummaryLoading(false);
+        }
+      }
+    };
+
+    loadSummary();
+    return () => controller.abort();
+  }, []);
 
   const filteredRecords = useMemo(() => {
     const keyword = query.trim().toLocaleLowerCase("ko");
@@ -205,7 +289,11 @@ export default function HistoryPage({ onNavigate }) {
             </a>
           </section>
 
-          <HistorySummary />
+          <HistorySummary
+            error={summaryError}
+            isLoading={isSummaryLoading}
+            summary={summary}
+          />
           <HistoryFilters query={query} onQueryChange={setQuery} />
 
           <section className="records-section" aria-labelledby="records-title">
