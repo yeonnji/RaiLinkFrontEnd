@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { requestShippingRecommendation } from "../api/shipping.js";
 import { DashboardFrame, PrimaryNav } from "../components/AppShell.jsx";
 import ShipmentPanel from "../components/ShipmentPanel.jsx";
@@ -80,6 +80,14 @@ const buildRecommendationReason = (result) => {
     ? "희망 운송일 철도 운행 가능"
     : `${result.schedule?.next_available_date || "다음 운행일"} 운행 가능`;
   return `${costText} · 탄소 ${formatPercent(carbonReduction)} 감소 · ${operationText}`;
+};
+
+const getCleanExplanation = (result) => {
+  const reason = buildRecommendationReason(result);
+  return (result.ai_explanation_error
+    ? reason
+    : result.ai_explanation || reason
+  ).replaceAll("**", "");
 };
 
 function MetricCard({ mode, recommended, result }) {
@@ -261,9 +269,9 @@ const getScheduleRows = (result, mode) => {
   ];
 };
 
-function TransportDetails({ mode, result }) {
+const getTransportDetailItems = (mode, result) => {
   const road = mode === "road";
-  const items = road
+  return road
     ? [
         ["순수 운송비", formatWon(result.cost?.road_only?.estimated_freight_fare_won)],
         ["통행료", formatWon(result.cost?.road_only?.toll_won)],
@@ -277,6 +285,11 @@ function TransportDetails({ mode, result }) {
         ["톤당 운임", `${formatWon(result.rail?.fare_per_ton_won)}/톤`],
         ["운송 실적", `${Number(result.rail?.performance_record_count || 0).toLocaleString("ko-KR")}건`],
       ];
+};
+
+function TransportDetails({ mode, result }) {
+  const road = mode === "road";
+  const items = getTransportDetailItems(mode, result);
 
   return (
     <div className={`transport-details ${road ? "road-details" : "rail-details"}`} aria-label={`${getModeName(mode)} 추가 정보`}>
@@ -289,6 +302,158 @@ function TransportDetails({ mode, result }) {
     </div>
   );
 }
+
+const ShippingPdfReport = forwardRef(function ShippingPdfReport({ result }, ref) {
+  const mode = getRecommendedMode(result);
+  const scheduleRows = getScheduleRows(result, mode);
+  const detailItems = getTransportDetailItems(mode, result);
+  const reason = buildRecommendationReason(result);
+  const explanation = getCleanExplanation(result);
+  const roadCost = result.cost?.road_only?.total_cost_won;
+  const multimodalCost = result.cost?.multimodal_total_cost_won;
+  const recommendedCost = mode === "road" ? roadCost : multimodalCost;
+  const comparisonRows = [
+    {
+      mode: "road",
+      name: "도로 100%",
+      cost: roadCost,
+      duration: result.time?.road_only_time_min,
+      distance: result.distance?.road_only_distance_km,
+      emission: result.carbon?.road_only_emission_kg,
+      railShare: 0,
+    },
+    {
+      mode: "multimodal",
+      name: "철도 복합운송",
+      cost: multimodalCost,
+      duration: result.time?.multimodal_total_time_min,
+      distance: result.distance?.multimodal_total_distance_km,
+      emission: result.carbon?.multimodal_emission_kg,
+      railShare: result.distance?.rail_ratio,
+    },
+  ];
+
+  return (
+    <div className="pdf-report-stage" aria-hidden="true">
+      <article className="pdf-report" ref={ref}>
+        <header className="pdf-report-header">
+          <div>
+            <span>철도 중심 복합물류 AI 의사결정 플랫폼</span>
+            <h1>AI 운송 추천 보고서</h1>
+          </div>
+          <div className="pdf-report-brand">
+            <strong>RAILINK</strong>
+            <span>{result.shipping_date} 기준</span>
+          </div>
+        </header>
+
+        <section className="pdf-shipment-summary" aria-label="운송 기본 정보">
+          <div className="wide">
+            <small>출발지</small>
+            <strong>{result.origin?.name || "-"}</strong>
+            <span>{result.origin?.address || "주소 정보 없음"}</span>
+          </div>
+          <div className="wide">
+            <small>도착지</small>
+            <strong>{result.destination?.name || "-"}</strong>
+            <span>{result.destination?.address || "주소 정보 없음"}</span>
+          </div>
+          <div>
+            <small>화물 중량</small>
+            <strong>{result.cargo_weight_ton}톤</strong>
+          </div>
+          <div>
+            <small>희망 운송일</small>
+            <strong>{result.shipping_date}</strong>
+          </div>
+        </section>
+
+        <section className={`pdf-recommendation-hero ${mode}`}>
+          <div>
+            <span>FINAL RECOMMENDATION</span>
+            <h2>{result.recommendation?.recommended_name || getModeName(mode)}</h2>
+            <p>{reason}</p>
+          </div>
+          <div>
+            <small>예상 총 운송비</small>
+            <strong>{formatWon(recommendedCost)}</strong>
+            <span>{formatDuration(mode === "road" ? result.time?.road_only_time_min : result.time?.multimodal_total_time_min)}</span>
+          </div>
+        </section>
+
+        <section className="pdf-report-section pdf-comparison-section">
+          <header>
+            <span>01</span>
+            <h2>운송안 비교</h2>
+          </header>
+          <div className="pdf-comparison-table">
+            <div className="pdf-table-head">
+              <span>운송안</span><span>총비용</span><span>소요시간</span><span>총거리</span><span>탄소배출</span><span>철도 비중</span>
+            </div>
+            {comparisonRows.map((row) => (
+              <div className={row.mode === mode ? "recommended" : ""} key={row.mode}>
+                <span><strong>{row.name}</strong>{row.mode === mode && <em>추천</em>}</span>
+                <span>{formatWon(row.cost)}</span>
+                <span>{formatDuration(row.duration)}</span>
+                <span>{formatKm(row.distance)}</span>
+                <span>{formatEmission(row.emission)}</span>
+                <span>{formatPercent(row.railShare)}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="pdf-report-section pdf-schedule-section">
+          <header>
+            <span>02</span>
+            <h2>선택 운송안 상세 일정</h2>
+          </header>
+          <div className="pdf-schedule-table">
+            <div className="pdf-table-head">
+              <span>순서</span><span>운송 구간</span><span>수단</span><span>거리</span><span>소요</span><span>예상 운임</span>
+            </div>
+            {scheduleRows.map((row) => (
+              <div key={row.number}>
+                <span>{row.number}</span>
+                <span><strong>{row.route}</strong><small>{row.detail}</small></span>
+                <span>{row.method}</span>
+                <span>{row.distance}</span>
+                <span>{row.duration}</span>
+                <span>{row.cost}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="pdf-report-section pdf-detail-section">
+          <header>
+            <span>03</span>
+            <h2>{getModeName(mode)} 상세 정보</h2>
+          </header>
+          <div className={`pdf-transport-details columns-${detailItems.length}`}>
+            {detailItems.map(([label, value]) => (
+              <span key={label}>
+                <small>{label}</small>
+                <strong>{value}</strong>
+              </span>
+            ))}
+          </div>
+        </section>
+
+        <section className="pdf-ai-summary">
+          <span>AI RECOMMENDATION</span>
+          <h2>추천 분석</h2>
+          <p>{explanation}</p>
+        </section>
+
+        <footer className="pdf-report-footer">
+          <span>본 견적은 입력 조건과 실시간 운임 데이터를 기반으로 산출된 예상 결과입니다.</span>
+          <strong>RAILINK · 1 / 1</strong>
+        </footer>
+      </article>
+    </div>
+  );
+});
 
 function SchedulePanel({ result }) {
   const mode = getRecommendedMode(result);
@@ -346,7 +511,7 @@ function SchedulePanel({ result }) {
   );
 }
 
-function EstimateTicket({ result }) {
+function EstimateTicket({ downloadError, isDownloading, onDownload, result }) {
   const mode = getRecommendedMode(result);
   const road = mode === "road";
   const roadCost = Number(result.cost?.road_only?.total_cost_won) || 0;
@@ -370,7 +535,15 @@ function EstimateTicket({ result }) {
           <small>AI ESTIMATE TICKET</small>
           <h2 id="ticket-title">{getModeName(mode)} 견적</h2>
         </div>
-        <button type="button">PDF 다운로드</button>
+        <button
+          type="button"
+          disabled={isDownloading}
+          title={downloadError || "세로형 PDF 보고서 다운로드"}
+          aria-busy={isDownloading}
+          onClick={onDownload}
+        >
+          {isDownloading ? "PDF 생성 중…" : "PDF 다운로드"}
+        </button>
       </header>
 
       <div className="ticket-price">
@@ -398,10 +571,7 @@ function EstimateTicket({ result }) {
 
 function Recommendation({ result }) {
   const reason = buildRecommendationReason(result);
-  const explanation = (result.ai_explanation_error
-    ? reason
-    : result.ai_explanation || reason
-  ).replaceAll("**", "");
+  const explanation = getCleanExplanation(result);
 
   return (
     <section className="recommendation" aria-label="AI 추천 결과">
@@ -425,7 +595,10 @@ export default function DashboardPage({ onNavigate }) {
   const [includeComparison, setIncludeComparison] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isPdfDownloading, setIsPdfDownloading] = useState(false);
+  const [pdfDownloadError, setPdfDownloadError] = useState("");
   const activeRequestRef = useRef(null);
+  const pdfReportRef = useRef(null);
 
   useEffect(
     () => () => {
@@ -460,6 +633,58 @@ export default function DashboardPage({ onNavigate }) {
     }
   };
 
+  const handlePdfDownload = async () => {
+    if (!pdfReportRef.current || isPdfDownloading) return;
+
+    setIsPdfDownloading(true);
+    setPdfDownloadError("");
+
+    try {
+      await document.fonts?.ready;
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      const reportElement = pdfReportRef.current;
+      const canvas = await html2canvas(reportElement, {
+        backgroundColor: "#ffffff",
+        height: reportElement.offsetHeight,
+        logging: false,
+        scale: 2,
+        useCORS: true,
+        width: reportElement.offsetWidth,
+        windowHeight: reportElement.offsetHeight,
+        windowWidth: reportElement.offsetWidth,
+      });
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+      const title = `${result.origin?.name || "출발지"} - ${result.destination?.name || "도착지"} 운송 추천 보고서`;
+      pdf.setProperties({
+        title,
+        subject: "RAILINK AI 운송 추천 결과",
+        author: "RAILINK",
+        creator: "RAILINK",
+      });
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, 210, 297, undefined, "FAST");
+
+      const safeRoute = `${result.origin?.name || "출발지"}_${result.destination?.name || "도착지"}`
+        .replace(/[^가-힣a-zA-Z0-9_-]+/g, "_")
+        .slice(0, 48);
+      pdf.save(`RAILINK_${safeRoute}_${result.shipping_date || "견적"}.pdf`);
+    } catch (downloadError) {
+      console.error(downloadError);
+      setPdfDownloadError("PDF를 만들지 못했습니다. 다시 시도해 주세요.");
+    } finally {
+      setIsPdfDownloading(false);
+    }
+  };
+
   return (
     <DashboardFrame onNavigate={onNavigate}>
       <div className={`workspace${panelCollapsed ? " panel-collapsed" : ""}`} id="dashboard-workspace">
@@ -491,11 +716,17 @@ export default function DashboardPage({ onNavigate }) {
           <ComparisonPanel includeComparison={includeComparison} result={result} />
           <div className="lower-grid">
             <SchedulePanel result={result} />
-            <EstimateTicket result={result} />
+            <EstimateTicket
+              downloadError={pdfDownloadError}
+              isDownloading={isPdfDownloading}
+              onDownload={handlePdfDownload}
+              result={result}
+            />
           </div>
           <Recommendation result={result} />
         </main>
       </div>
+      <ShippingPdfReport ref={pdfReportRef} result={result} />
     </DashboardFrame>
   );
 }
