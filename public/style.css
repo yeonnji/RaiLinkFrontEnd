@@ -1234,20 +1234,28 @@ body.api-is-loading {
 .place-labels.four span {
   position: absolute;
   top: 0;
+  max-width: 46%;
+  line-height: 1.15;
 }
 
 .place-labels.four span:first-child {
   left: 0;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
 .place-labels.four span:nth-child(2) {
   left: 24%;
+  top: calc(184% + 12px);
   transform: translateX(-50%);
+  text-align: center;
 }
 
 .place-labels.four span:nth-child(3) {
   left: 76%;
+  top: calc(184% + 12px);
   transform: translateX(-50%);
+  text-align: center;
 }
 
 .place-labels.four span:last-child {
@@ -1261,6 +1269,13 @@ body.api-is-loading {
 
 .place-labels.two {
   grid-template-columns: 1fr 1fr;
+}
+
+.place-labels.two span:first-child {
+  position: relative;
+  left: 0;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
 .place-labels span {
@@ -1345,7 +1360,7 @@ body.api-is-loading {
 .truck-icon {
   position: absolute;
   z-index: 3;
-  right: 20%;
+  right: 30%;
   bottom: 1px;
   width: clamp(22px, 2.03vw, 29px);
   aspect-ratio: 147 / 139;
