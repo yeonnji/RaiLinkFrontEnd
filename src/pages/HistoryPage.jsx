@@ -1,84 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
-import { requestHistorySummary } from "../api/history.js";
+import { requestHistoryList, requestHistorySummary } from "../api/history.js";
 import { DashboardFrame, PrimaryNav } from "../components/AppShell.jsx";
 
-const historyRecords = [
-  {
-    origin: "인천 남동공단",
-    destination: "부산 신항",
-    weight: "20t",
-    badge: "철도 추천",
-    track: "mixed",
-    plan: "TRUCK → RAIL → TRUCK",
-    share: "철도 66%",
-    cost: "16.8%",
-    costDetail: "- 184,000원",
-    carbon: "73.4%",
-    carbonDetail: "- 312 kgCO₂e",
-    date: "2026.08.08",
-    time: "14:32",
-    selected: true,
-  },
-  {
-    origin: "평택 포승산단",
-    destination: "광양항",
-    weight: "18t",
-    badge: "철도 추천",
-    track: "mixed",
-    plan: "TRUCK → RAIL → TRUCK",
-    share: "철도 72%",
-    cost: "21.3%",
-    costDetail: "- 246,000원",
-    carbon: "68.1%",
-    carbonDetail: "- 286 kgCO₂e",
-    date: "2026.08.08",
-    time: "11:05",
-  },
-  {
-    origin: "대전 물류센터",
-    destination: "울산 산업단지",
-    weight: "12t",
-    badge: "철도 추천",
-    track: "mixed",
-    plan: "TRUCK → RAIL → TRUCK",
-    share: "철도 58%",
-    cost: "13.6%",
-    costDetail: "- 121,000원",
-    carbon: "61.5%",
-    carbonDetail: "- 198 kgCO₂e",
-    date: "2026.08.07",
-    time: "18:47",
-  },
-  {
-    origin: "수원 물류센터",
-    destination: "부산 신항",
-    weight: "6t",
-    badge: "도로 추천",
-    track: "road",
-    plan: "TRUCK DIRECT",
-    share: "도로 100%",
-    cost: "+2.1%",
-    costDetail: "철도 대비",
-    carbon: "-8.2%",
-    carbonDetail: "철도 대비",
-    date: "2026.08.07",
-    time: "16:21",
-  },
-  {
-    origin: "의왕 ICD",
-    destination: "부산 신항",
-    weight: "22t",
-    badge: "철도 추천",
-    track: "rail",
-    plan: "RAIL DIRECT",
-    share: "철도 100%",
-    cost: "24.8%",
-    costDetail: "- 318,000원",
-    carbon: "76.9%",
-    carbonDetail: "- 402 kgCO₂e",
-    date: "2026.08.07",
-    time: "13:18",
-  },
+const PAGE_SIZE = 5;
+
+const periodOptions = [
+  ["7", "최근 7일"],
+  ["30", "최근 30일"],
+  ["90", "최근 90일"],
+];
+
+const transportModeOptions = [
+  ["all", "전체 운송 방식"],
+  ["rail", "철도 포함"],
+  ["road", "도로 단독"],
+];
+
+const costSavingOptions = [
+  ["all", "비용 절감률 전체"],
+  ["savingOnly", "절감 운송안만"],
+  ["min10", "10% 이상 절감"],
+  ["min20", "20% 이상 절감"],
+];
+
+const sortOptions = [
+  ["latest", "최신 분석순"],
+  ["costSaving", "비용 절감순"],
+  ["carbonSaving", "탄소 절감순"],
 ];
 
 function Track({ type }) {
@@ -171,7 +119,21 @@ function HistorySummary({ error, isLoading, summary }) {
   );
 }
 
-function HistoryFilters({ query, onQueryChange }) {
+function FilterSelect({ ariaLabel, onChange, options, value }) {
+  return (
+    <label className="filter-select-wrap">
+      <span className="filter-label">{ariaLabel}</span>
+      <select aria-label={ariaLabel} value={value} onChange={onChange}>
+        {options.map(([optionValue, label]) => (
+          <option key={optionValue} value={optionValue}>{label}</option>
+        ))}
+      </select>
+      <i aria-hidden="true" />
+    </label>
+  );
+}
+
+function HistoryFilters({ filters, onFilterChange, onQueryChange, query }) {
   return (
     <form className="history-filters" role="search" onSubmit={(event) => event.preventDefault()}>
       <label className="history-search">
@@ -179,58 +141,164 @@ function HistoryFilters({ query, onQueryChange }) {
         <input
           type="search"
           value={query}
-          placeholder="출발지, 도착지, 화물명을 검색하세요"
+          placeholder="출발지 또는 도착지를 검색하세요"
           aria-label="분석 기록 검색"
           onChange={(event) => onQueryChange(event.target.value)}
         />
       </label>
-      <button className="filter-select" type="button">최근 30일<i aria-hidden="true" /></button>
-      <button className="filter-select" type="button">전체 운송 방식<i aria-hidden="true" /></button>
-      <button className="filter-select" type="button">비용 절감률 전체<i aria-hidden="true" /></button>
+      <FilterSelect
+        ariaLabel="조회 기간"
+        onChange={(event) => onFilterChange("period", event.target.value)}
+        options={periodOptions}
+        value={filters.period}
+      />
+      <FilterSelect
+        ariaLabel="운송 방식"
+        onChange={(event) => onFilterChange("transportMode", event.target.value)}
+        options={transportModeOptions}
+        value={filters.transportMode}
+      />
+      <FilterSelect
+        ariaLabel="비용 절감률"
+        onChange={(event) => onFilterChange("costSaving", event.target.value)}
+        options={costSavingOptions}
+        value={filters.costSaving}
+      />
       <span className="filter-spacer" />
       <div className="sort-control">
         <small>정렬</small>
-        <button className="filter-select" type="button">최신 분석순<i aria-hidden="true" /></button>
+        <FilterSelect
+          ariaLabel="목록 정렬"
+          onChange={(event) => onFilterChange("sort", event.target.value)}
+          options={sortOptions}
+          value={filters.sort}
+        />
       </div>
     </form>
   );
 }
 
+const formatListRate = (value) => {
+  const rate = Number(value) || 0;
+  return `${rate.toLocaleString("ko-KR", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })}%`;
+};
+
+const formatListAmount = (value, unit) => {
+  const amount = Number(value) || 0;
+  const direction = amount >= 0 ? "절감" : "증가";
+  const formatted = Math.abs(amount).toLocaleString("ko-KR", {
+    maximumFractionDigits: unit === "원" ? 0 : 1,
+  });
+  return `${formatted}${unit} ${direction}`;
+};
+
+const formatAnalysisDate = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return { date: "-", time: "-" };
+
+  return {
+    date: [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+      .map((part, index) => index === 0 ? part : String(part).padStart(2, "0"))
+      .join("."),
+    time: date.toLocaleTimeString("ko-KR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }),
+  };
+};
+
+const getTrackType = (record) => {
+  if (record.recommendedMode === "road") return "road";
+  if (record.transportLegs.includes("road") && record.transportLegs.includes("rail")) return "mixed";
+  return "rail";
+};
+
+const getTransportPlan = (record) => {
+  const legs = record.transportLegs.length
+    ? record.transportLegs.map((leg) => (leg === "rail" ? "RAIL" : "TRUCK")).join(" → ")
+    : record.recommendedMode === "road" ? "TRUCK DIRECT" : "RAIL";
+
+  return {
+    legs,
+    share: record.recommendedMode === "road"
+      ? "도로 100%"
+      : `철도 ${formatSummaryRate(record.railRatio)}%`,
+  };
+};
+
 function HistoryRow({ record }) {
-  const road = record.track === "road";
+  const track = getTrackType(record);
+  const road = track === "road";
+  const plan = getTransportPlan(record);
+  const analyzedAt = formatAnalysisDate(record.analyzedAt);
+  const costPositive = record.costSavingRate >= 0;
+  const carbonPositive = record.carbonSavingRate >= 0;
 
   return (
-    <article className={`history-row${record.selected ? " selected-row" : ""}`}>
+    <article className="history-row">
       <div className="history-route-cell">
-        <span className={`route-badge ${road ? "road-badge" : "rail-badge"}`}>{record.badge}</span>
+        <span className={`route-badge ${road ? "road-badge" : "rail-badge"}`}>{road ? "도로 추천" : "철도 추천"}</span>
         <div className="history-route-line">
-          <strong>{record.origin}</strong>
-          <Track type={record.track} />
-          <strong>{record.destination}</strong>
+          <strong title={record.originName}>{record.originName || "-"}</strong>
+          <Track type={track} />
+          <strong title={record.destinationName}>{record.destinationName || "-"}</strong>
         </div>
       </div>
-      <strong className="cargo-weight">{record.weight}</strong>
+      <strong className="cargo-weight">{record.cargoWeightTon.toLocaleString("ko-KR")}t</strong>
       <div className={`transport-plan${road ? " road-plan" : ""}`}>
-        <small>{record.plan}</small><strong>{record.share}</strong>
+        <small>{plan.legs}</small><strong>{plan.share}</strong>
       </div>
-      <div className={`saving ${road ? "negative-saving" : "cost-saving"}`}>
-        <strong>{record.cost}</strong><small>{record.costDetail}</small>
+      <div className={`saving ${costPositive ? "cost-saving" : "negative-saving"}`}>
+        <strong>{formatListRate(record.costSavingRate)}</strong>
+        <small>{formatListAmount(record.costSavingWon, "원")}</small>
       </div>
-      <div className={`saving ${road ? "neutral-saving" : "carbon-saving"}`}>
-        <strong>{record.carbon}</strong><small>{record.carbonDetail}</small>
+      <div className={`saving ${carbonPositive ? "carbon-saving" : "negative-saving"}`}>
+        <strong>{formatListRate(record.carbonSavingRate)}</strong>
+        <small>{formatListAmount(record.carbonSavingKg, "kgCO₂e")}</small>
       </div>
-      <div className="analysis-date"><strong>{record.date}</strong><small>{record.time}</small></div>
-      <button className="detail-arrow" type="button" aria-label={`${record.origin} 분석 상세 보기`}>→</button>
+      <div className="analysis-date"><strong>{analyzedAt.date}</strong><small>{analyzedAt.time}</small></div>
+      <button className="detail-arrow" type="button" aria-label={`${record.originName} 분석 상세 보기`} data-recept-no={record.receptNo}>→</button>
     </article>
   );
 }
 
+const getVisiblePages = (currentPage, totalPages) => {
+  if (totalPages <= 5) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const start = Math.min(Math.max(1, currentPage - 2), totalPages - 4);
+  return Array.from({ length: 5 }, (_, index) => start + index);
+};
+
 export default function HistoryPage({ onNavigate }) {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [filters, setFilters] = useState({
+    period: "30",
+    transportMode: "all",
+    costSaving: "all",
+    sort: "latest",
+  });
   const [page, setPage] = useState(1);
   const [summary, setSummary] = useState(null);
   const [summaryError, setSummaryError] = useState("");
   const [isSummaryLoading, setIsSummaryLoading] = useState(true);
+  const [records, setRecords] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    totalItems: 0,
+    totalPages: 0,
+    hasPrevious: false,
+    hasNext: false,
+  });
+  const [recordsError, setRecordsError] = useState("");
+  const [isRecordsLoading, setIsRecordsLoading] = useState(true);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -257,16 +325,60 @@ export default function HistoryPage({ onNavigate }) {
     return () => controller.abort();
   }, []);
 
-  const filteredRecords = useMemo(() => {
-    const keyword = query.trim().toLocaleLowerCase("ko");
-    if (!keyword) return historyRecords;
-    return historyRecords.filter((record) =>
-      [record.origin, record.destination, record.weight, record.badge]
-        .join(" ")
-        .toLocaleLowerCase("ko")
-        .includes(keyword),
-    );
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setDebouncedQuery(query.trim());
+      setPage(1);
+    }, 350);
+
+    return () => window.clearTimeout(timeout);
   }, [query]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadRecords = async () => {
+      setIsRecordsLoading(true);
+      setRecordsError("");
+
+      try {
+        const data = await requestHistoryList(
+          {
+            keyword: debouncedQuery,
+            ...filters,
+            page,
+            pageSize: PAGE_SIZE,
+          },
+          { signal: controller.signal },
+        );
+        setRecords(data.items);
+        setPagination(data.pagination);
+      } catch (requestError) {
+        if (requestError.name !== "AbortError") {
+          setRecords([]);
+          setPagination((current) => ({ ...current, totalItems: 0, totalPages: 0 }));
+          setRecordsError(requestError.message || "히스토리 목록을 불러오지 못했습니다.");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsRecordsLoading(false);
+        }
+      }
+    };
+
+    loadRecords();
+    return () => controller.abort();
+  }, [debouncedQuery, filters, page]);
+
+  const visiblePages = useMemo(
+    () => getVisiblePages(page, pagination.totalPages),
+    [page, pagination.totalPages],
+  );
+
+  const handleFilterChange = (name, value) => {
+    setFilters((current) => ({ ...current, [name]: value }));
+    setPage(1);
+  };
 
   const openDashboard = (event) => {
     event.preventDefault();
@@ -294,10 +406,15 @@ export default function HistoryPage({ onNavigate }) {
             isLoading={isSummaryLoading}
             summary={summary}
           />
-          <HistoryFilters query={query} onQueryChange={setQuery} />
+          <HistoryFilters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onQueryChange={setQuery}
+            query={query}
+          />
 
-          <section className="records-section" aria-labelledby="records-title">
-            <h2 id="records-title">분석 기록 <small>{query ? `${filteredRecords.length}건` : "24건"}</small></h2>
+          <section className="records-section" aria-busy={isRecordsLoading} aria-labelledby="records-title">
+            <h2 id="records-title">분석 기록 <small>{pagination.totalItems.toLocaleString("ko-KR")}건</small></h2>
 
             <div className="history-columns" aria-hidden="true">
               <span>분석 경로</span>
@@ -310,35 +427,42 @@ export default function HistoryPage({ onNavigate }) {
             </div>
 
             <div className="history-rows">
-              {filteredRecords.map((record) => (
-                <HistoryRow key={`${record.origin}-${record.destination}`} record={record} />
-              ))}
+              {isRecordsLoading ? (
+                <div className="history-list-state" role="status">분석 기록을 불러오는 중입니다.</div>
+              ) : recordsError ? (
+                <div className="history-list-state error-state" role="alert">{recordsError}</div>
+              ) : records.length ? (
+                records.map((record) => <HistoryRow key={record.receptNo} record={record} />)
+              ) : (
+                <div className="history-list-state">조건에 맞는 분석 기록이 없습니다.</div>
+              )}
             </div>
           </section>
 
-          <nav className="pagination" aria-label="분석 기록 페이지">
+          <nav className="pagination" aria-label="분석 기록 페이지" hidden={pagination.totalPages <= 1}>
             <button
-              className={`page-arrow${page === 1 ? " disabled" : ""}`}
+              className={`page-arrow${!pagination.hasPrevious ? " disabled" : ""}`}
               type="button"
               aria-label="이전 페이지"
-              disabled={page === 1}
+              disabled={!pagination.hasPrevious || isRecordsLoading}
               onClick={() => setPage((current) => Math.max(1, current - 1))}
             >‹</button>
-            {[1, 2, 3].map((number) => (
+            {visiblePages.map((number) => (
               <button
                 className={`page-number${page === number ? " active" : ""}`}
                 type="button"
                 aria-current={page === number ? "page" : undefined}
+                disabled={isRecordsLoading}
                 key={number}
                 onClick={() => setPage(number)}
               >{number}</button>
             ))}
             <button
-              className="page-arrow"
+              className={`page-arrow${!pagination.hasNext ? " disabled" : ""}`}
               type="button"
               aria-label="다음 페이지"
-              disabled={page === 3}
-              onClick={() => setPage((current) => Math.min(3, current + 1))}
+              disabled={!pagination.hasNext || isRecordsLoading}
+              onClick={() => setPage((current) => Math.min(pagination.totalPages, current + 1))}
             >›</button>
           </nav>
         </main>
