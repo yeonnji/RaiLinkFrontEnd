@@ -8,6 +8,20 @@
     ],
     "rewrites": [
       {
+        "source": "/api/history",
+        "run": {
+          "serviceId": "railink-run",
+          "region": "asia-northeast3"
+        }
+      },
+      {
+        "source": "/api/history/**",
+        "run": {
+          "serviceId": "railink-run",
+          "region": "asia-northeast3"
+        }
+      },
+      {
         "source": "/api/**",
         "run": {
           "serviceId": "cloudrun-test",
