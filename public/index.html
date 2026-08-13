@@ -1,89 +1,286 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="ko">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.17.1/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.17.1/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.17.1/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>RAILINK | 철도 복합물류 AI 플랫폼</title>
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+    <div class="dashboard">
+      <header class="topbar">
+        <a class="korail-logo" href="#" aria-label="KORAIL 홈">KORAIL</a>
+
+        <div class="topbar-content">
+          <div class="brand-copy">
+            <span>철도 중심 복합물류 AI 의사결정 플랫폼</span>
+            <strong>RAILINK</strong>
+          </div>
+
+          <div class="topbar-status">
+            <div class="estimate-id">
+              <strong>견적번호 KR-260806-0217</strong>
+              <span>2026.08.06 09:40 기준</span>
+            </div>
+            <div class="live-pill">
+              <i aria-hidden="true"></i>
+              <strong>운임 데이터 정상</strong>
+              <span></span>
+              <button type="button">실시간 반영</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <nav class="primary-nav" aria-label="주요 메뉴">
+          <a class="nav-item active" href="#" aria-current="page">
+            <span class="nav-symbol document-symbol" aria-hidden="true"></span>
+            <strong>운송설계</strong>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-symbol history-symbol" aria-hidden="true"></span>
+            <strong>히스토리</strong>
+          </a>
+
+          <div class="nav-line" aria-hidden="true">
+            <i></i><i></i><i></i>
+          </div>
+          <span class="railink-seal">RAILINK</span>
+        </nav>
+
+        <aside class="input-panel">
+          <section class="shipment-section" aria-labelledby="shipment-title">
+            <span class="eyebrow">SHIPMENT INPUT</span>
+            <h1 id="shipment-title">운송 조건</h1>
+            <p class="help-text">필수 입력 5개 · 자동 저장됨</p>
+
+            <div class="field-list">
+              <label class="field-row accent">
+                <span class="field-dot"></span>
+                <span class="field-box">
+                  <small>출발지</small>
+                  <strong>부산항</strong>
+                </span>
+              </label>
+              <label class="field-row">
+                <span class="field-dot"></span>
+                <span class="field-box">
+                  <small>도착지</small>
+                  <strong>평택공장</strong>
+                </span>
+              </label>
+              <label class="field-row">
+                <span class="field-dot"></span>
+                <span class="field-box split-value">
+                  <span>
+                    <small>중량</small>
+                    <strong>20톤</strong>
+                  </span>
+                  <em>최대 24톤</em>
+                </span>
+              </label>
+              <label class="field-row">
+                <span class="field-dot"></span>
+                <span class="field-box date-field">
+                  <span>
+                    <small>희망 출발일</small>
+                    <strong>2026.08.08</strong>
+                  </span>
+                  <i class="calendar-icon" aria-hidden="true"></i>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="option-section" aria-labelledby="option-title">
+            <span class="eyebrow">ROUTE OPTIONS</span>
+            <h2 id="option-title">운송안 선택 기준</h2>
+            <p class="help-text">우선순위 4가지 중 선택</p>
+
+            <div class="priority-grid">
+              <label><input type="radio" name="priority" /><span>비용우선</span></label>
+              <label><input type="radio" name="priority" checked /><span>시간우선</span></label>
+              <label><input type="radio" name="priority" /><span>환경우선</span></label>
+              <label><input type="radio" name="priority" /><span>균형형</span></label>
+            </div>
+
+            <label class="compare-check">
+              <input type="checkbox" checked />
+              <span>철도 · 도로 비교 포함</span>
+            </label>
+
+            <button class="generate-button" type="button">
+              <strong>AI 추천 운송안 생성</strong>
+              <span aria-hidden="true">⟶</span>
+            </button>
+          </section>
+        </aside>
+
+        <main class="content" aria-label="운송 경로 분석 결과">
+          <button class="collapse-tab" type="button" aria-label="운송 조건 패널 접기">
+            <b aria-hidden="true">‹</b><span>COLLAPSE</span>
+          </button>
+
+          <section class="comparison-panel" aria-labelledby="comparison-title">
+            <header class="panel-heading comparison-heading">
+              <h2 id="comparison-title">추천 운송 경로 · 비용 우선</h2>
+              <i></i>
+              <button type="button">철도 vs 도로 비교</button>
+              <span>최적경로 기준</span>
+            </header>
+
+            <article class="route-option selected">
+              <span class="route-order">01</span>
+              <div class="route-title">
+                <em>추천</em>
+                <strong>철도 복합운송</strong>
+                <small>Truck → Rail → Truck</small>
+              </div>
+
+              <div class="route-visual rail-route" aria-label="부산항에서 평택공장까지 철도 복합운송 경로">
+                <div class="place-labels four">
+                  <span>부산항</span><span>부산진 CY</span><span>오봉역 CY</span><span>평택공장</span>
+                </div>
+                <div class="rail-line route-line">
+                  <i class="route-node first"></i>
+                  <i class="route-node second"></i>
+                  <span class="train-icon" aria-hidden="true"><i></i><b></b><b></b></span>
+                </div>
+                <div class="distance-labels three">
+                  <span>도로 15km</span><strong>철도 본선 420km</strong><span>도로 20km</span>
+                </div>
+              </div>
+
+              <div class="metric-card recommended">
+                <span class="metric-label">최적경로 추천</span>
+                <div class="metric-grid">
+                  <span><small>총운임</small><strong>923,000원</strong></span>
+                  <span><small>소요</small><strong>25시간</strong></span>
+                  <span><small>CO₂</small><strong class="green">46% ↓</strong></span>
+                  <span><small>환적</small><strong>2회</strong></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="route-option">
+              <span class="route-order muted">02</span>
+              <div class="route-title">
+                <em class="muted-tag">비교안</em>
+                <strong>도로 단독운송</strong>
+                <small>Direct Truck</small>
+              </div>
+
+              <div class="route-visual road-route" aria-label="부산항에서 평택공장까지 도로 단독운송 경로">
+                <div class="place-labels two"><span>부산항</span><span>평택공장</span></div>
+                <div class="road-line route-line">
+                  <i class="route-node first"></i>
+                  <i class="route-node last"></i>
+                  <span class="truck-icon" aria-hidden="true"><i></i><b></b><b></b></span>
+                </div>
+                <strong class="road-note">도로 직송 455km · 환적 없음</strong>
+              </div>
+
+              <div class="metric-card">
+                <span class="metric-label orange-label">최소시간 기준</span>
+                <div class="metric-grid">
+                  <span><small>총운임</small><strong>1,120,000원</strong></span>
+                  <span><small>소요</small><strong>19시간</strong></span>
+                  <span><small>CO₂</small><strong class="orange">기준 100</strong></span>
+                  <span><small>환적</small><strong>0회</strong></span>
+                </div>
+              </div>
+            </article>
+
+            <footer class="comparison-reason">
+              <strong>철도 추천 사유</strong>
+              <span>비용 197,000원 절감 · 탄소 46% 감소 · 희망 도착일 충족</span>
+            </footer>
+          </section>
+
+          <div class="lower-grid">
+            <section class="schedule-panel" aria-labelledby="schedule-title">
+              <header class="panel-heading schedule-heading">
+                <h2 id="schedule-title">선택 운송안 상세 일정</h2>
+                <span>일반화물 20톤</span>
+              </header>
+
+              <div class="schedule-table" role="table" aria-label="선택 운송안 상세 일정">
+                <div class="schedule-columns" role="row">
+                  <span role="columnheader">순서</span>
+                  <span role="columnheader">운송 구간</span>
+                  <span role="columnheader">수단</span>
+                  <span role="columnheader">거리</span>
+                  <span role="columnheader">소요</span>
+                  <span role="columnheader">예상 운임</span>
+                </div>
+
+                <div class="schedule-row" role="row">
+                  <span class="schedule-number" role="cell">01</span>
+                  <span class="schedule-route" role="cell"><strong>부산항 → 부산진 CY</strong><small>First mile · 15km</small></span>
+                  <strong role="cell">도로</strong><strong role="cell">15km</strong><strong role="cell">1h 10m</strong><strong class="cost" role="cell">110,000원</strong>
+                </div>
+                <div class="schedule-row active" role="row">
+                  <span class="schedule-number" role="cell">02</span>
+                  <span class="schedule-route" role="cell"><strong>부산진 CY → 오봉역 CY</strong><small>Main rail · 420km</small></span>
+                  <strong class="rail-text" role="cell">철도</strong><strong role="cell">420km</strong><strong role="cell">18h 00m</strong><strong class="cost" role="cell">480,000원</strong>
+                </div>
+                <div class="schedule-row" role="row">
+                  <span class="schedule-number" role="cell">03</span>
+                  <span class="schedule-route" role="cell"><strong>오봉역 CY → 평택공장</strong><small>Last mile · 20km</small></span>
+                  <strong role="cell">도로</strong><strong role="cell">20km</strong><strong role="cell">1h 50m</strong><strong class="cost" role="cell">140,000원</strong>
+                </div>
+              </div>
+
+              <footer class="schedule-total">
+                <span>운송안 예상 총액</span>
+                <span><strong>923,000원</strong><small>총액표 포함</small></span>
+              </footer>
+            </section>
+
+            <aside class="estimate-ticket" aria-labelledby="ticket-title">
+              <header>
+                <div>
+                  <small>AI ESTIMATE TICKET</small>
+                  <h2 id="ticket-title">철도 복합운송 견적</h2>
+                </div>
+                <button type="button">PDF 다운로드</button>
+              </header>
+
+              <div class="ticket-price">
+                <small>예상 총 운송비</small>
+                <strong>923,000<em>원</em></strong>
+                <b>도로 대비 197,000원 절감</b>
+                <div>
+                  <span><small>기존 도로 운송</small><strong>1,120,000원</strong></span>
+                  <span><small>비용 절감률</small><strong>17.6%</strong></span>
+                </div>
+              </div>
+
+              <div class="ticket-detail-grid">
+                <span><small>LEAD TIME</small><strong>25시간</strong></span>
+                <span><small>RAIL SHARE</small><strong>92%</strong></span>
+                <span><small>CO₂ REDUCTION</small><strong>46% ↓</strong></span>
+                <span><small>VALID UNTIL</small><strong>08.07 18:00</strong></span>
+              </div>
+            </aside>
+          </div>
+
+          <section class="recommendation" aria-label="AI 추천 결과">
+            <b class="ai-tab">AI</b>
+            <span class="recommendation-title">
+              <small>AI RECOMMENDATION</small>
+              <strong>철도 복합운송을 추천합니다</strong>
+            </span>
+            <i></i>
+            <span class="recommendation-copy">
+              <span>최저비용·환경우선 점수가 높고, 08.08 내 도착 가능합니다.</span>
+              <strong>도로 대비 197,000원 절감 · 탄소 46% 감소</strong>
+            </span>
+          </section>
+        </main>
+      </div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
   </body>
 </html>
