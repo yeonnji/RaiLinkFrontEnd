@@ -41,7 +41,7 @@
   margin: 0;
   overflow: hidden;
   color: #8295a5;
-  font-size: clamp(9px, 0.83vw, 13px);
+  font-size: clamp(11px, 0.9vw, 14px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -56,7 +56,7 @@
   border-radius: 4px;
   background: var(--blue);
   color: #fff;
-  font-size: clamp(9px, 0.73vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
   font-weight: 800;
   text-decoration: none;
 }
@@ -96,7 +96,7 @@
 
 .summary-metric small {
   color: #718696;
-  font-size: clamp(8px, 0.65vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
   font-weight: 700;
 }
 
@@ -131,7 +131,7 @@
   border-radius: 99px;
   background: #e3f5fa;
   color: #05a9cc;
-  font-size: clamp(7px, 0.6vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
   text-align: center;
 }
 
@@ -153,7 +153,7 @@
 
 .recent-summary > span {
   color: #8599a8;
-  font-size: clamp(8px, 0.65vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
 }
 
 .history-filters {
@@ -206,7 +206,7 @@
   outline: 0;
   background: transparent;
   color: #1b374e;
-  font-size: clamp(8px, 0.7vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
 }
 
 .history-search input::placeholder {
@@ -225,7 +225,7 @@
   border-radius: 4px;
   background: #fff;
   color: #203b51;
-  font-size: clamp(8px, 0.69vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
   font-weight: 800;
   white-space: nowrap;
 }
@@ -248,7 +248,7 @@
 
 .sort-control small {
   color: #7e91a0;
-  font-size: clamp(8px, 0.65vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
   white-space: nowrap;
 }
 
@@ -270,7 +270,7 @@
 .records-section h2 small {
   margin-left: 5px;
   color: #8295a5;
-  font-size: clamp(8px, 0.65vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
   font-weight: 500;
 }
 
@@ -287,7 +287,7 @@
   border-left: 5px solid var(--blue);
   background: #e4f5fb;
   color: #0063aa;
-  font-size: clamp(8px, 0.67vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
   font-weight: 800;
 }
 
@@ -331,7 +331,7 @@
   min-width: 64px;
   padding: 3px 9px;
   border-radius: 99px;
-  font-size: clamp(6px, 0.55vw, 8px);
+  font-size: clamp(9px, 0.66vw, 10px);
   font-weight: 800;
   line-height: 1;
   text-align: center;
@@ -358,7 +358,7 @@
 .history-route-line > strong {
   overflow: hidden;
   color: #173249;
-  font-size: clamp(9px, 0.78vw, 12px);
+  font-size: clamp(10px, 0.82vw, 13px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -392,7 +392,7 @@
 .rail-direct-track { background: var(--blue); }
 
 .cargo-weight {
-  font-size: clamp(9px, 0.76vw, 12px);
+  font-size: clamp(10px, 0.8vw, 13px);
 }
 
 .transport-plan,
@@ -406,7 +406,7 @@
 .transport-plan small {
   overflow: hidden;
   color: #718496;
-  font-size: clamp(6px, 0.54vw, 8px);
+  font-size: clamp(9px, 0.66vw, 11px);
   font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -414,7 +414,7 @@
 
 .transport-plan strong {
   color: #0564af;
-  font-size: clamp(8px, 0.66vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
 }
 
 .transport-plan.road-plan strong {
@@ -430,7 +430,7 @@
 .analysis-date small {
   overflow: hidden;
   color: #8194a3;
-  font-size: clamp(6px, 0.53vw, 8px);
+  font-size: clamp(9px, 0.66vw, 11px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -441,7 +441,7 @@
 .neutral-saving strong { color: #71869a; }
 
 .analysis-date strong {
-  font-size: clamp(8px, 0.68vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
 }
 
 .detail-arrow {
@@ -469,7 +469,7 @@
   border-radius: 3px;
   background: #fff;
   color: #203b51;
-  font-size: clamp(8px, 0.67vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
   font-weight: 800;
   text-decoration: none;
 }

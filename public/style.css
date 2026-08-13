@@ -33,7 +33,7 @@ body {
   background: var(--canvas);
   color: var(--navy);
   font-family: Pretendard, "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
-  font-size: clamp(10px, 0.75vw, 13px);
+  font-size: clamp(12px, 0.82vw, 14px);
   line-height: 1.35;
   word-break: keep-all;
 }
@@ -103,7 +103,7 @@ button {
 
 .brand-copy span {
   color: var(--blue);
-  font-size: clamp(9px, 0.72vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
   font-weight: 800;
 }
 
@@ -133,7 +133,7 @@ button {
 
 .estimate-id span {
   color: #8295a5;
-  font-size: clamp(9px, 0.7vw, 11px);
+  font-size: clamp(10px, 0.76vw, 12px);
 }
 
 .live-pill {
@@ -158,7 +158,7 @@ button {
 }
 
 .live-pill strong {
-  font-size: clamp(9px, 0.74vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
 }
 
 .live-pill span {
@@ -171,7 +171,7 @@ button {
   background: transparent;
   color: #075eaa;
   font-weight: 800;
-  font-size: clamp(9px, 0.72vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
 }
 
 .workspace {
@@ -202,7 +202,7 @@ button {
   gap: min(0.7vh, 7px);
   color: #bde6f7;
   text-decoration: none;
-  font-size: clamp(9px, 0.72vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
   transition: color 180ms ease;
 }
 
@@ -316,7 +316,7 @@ button {
   border: 2px solid #57cbe7;
   border-radius: 50%;
   color: #a5ebfa;
-  font-size: clamp(9px, 0.72vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
   font-weight: 800;
 }
 
@@ -343,7 +343,7 @@ button {
   display: block;
   margin-bottom: min(0.4vh, 4px);
   color: #00a2c6;
-  font-size: clamp(8px, 0.66vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
   font-weight: 900;
 }
 
@@ -358,7 +358,7 @@ button {
 .help-text {
   margin: min(0.6vh, 6px) 0 min(1.2vh, 12px);
   color: #8999a6;
-  font-size: clamp(8px, 0.65vw, 10px);
+  font-size: clamp(11px, 0.82vw, 13px);
 }
 
 .field-list {
@@ -413,7 +413,7 @@ button {
 
 .field-box small {
   color: #778a99;
-  font-size: clamp(8px, 0.62vw, 9px);
+  font-size: clamp(10px, 0.72vw, 12px);
 }
 
 .field-box strong {
@@ -422,7 +422,7 @@ button {
 
 .field-box em {
   color: #71899b;
-  font-size: clamp(8px, 0.66vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
   font-style: normal;
 }
 
@@ -488,7 +488,7 @@ button {
   place-items: center;
   border: 1px solid #bdceda;
   background: #fff;
-  font-size: clamp(9px, 0.72vw, 11px);
+  font-size: clamp(11px, 0.8vw, 13px);
   font-weight: 800;
 }
 
@@ -504,7 +504,7 @@ button {
   gap: 8px;
   margin: min(1.9vh, 18px) 0 min(1.8vh, 17px);
   color: #496175;
-  font-size: clamp(8px, 0.68vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
   font-weight: 700;
 }
 
@@ -581,7 +581,7 @@ button {
 .collapse-tab span {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font-size: 8px;
+  font-size: clamp(9px, 0.7vw, 11px);
   font-weight: 900;
   letter-spacing: 0.08em;
 }
@@ -627,7 +627,7 @@ button {
 .comparison-heading button {
   background: transparent;
   color: #0960a6;
-  font-size: clamp(8px, 0.7vw, 11px);
+  font-size: clamp(10px, 0.78vw, 12px);
   font-weight: 800;
 }
 
@@ -639,7 +639,7 @@ button {
   padding: 0 clamp(14px, 1.5vw, 22px);
   background: #d3effa;
   color: #07518e;
-  font-size: clamp(8px, 0.66vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
   font-weight: 800;
 }
 
@@ -670,7 +670,7 @@ button {
   border-radius: 50%;
   background: var(--blue);
   color: #fff;
-  font-size: clamp(8px, 0.66vw, 10px);
+  font-size: clamp(10px, 0.74vw, 11px);
   font-weight: 800;
 }
 
@@ -694,7 +694,7 @@ button {
   background: var(--cyan);
   color: #fff;
   text-align: center;
-  font-size: clamp(7px, 0.58vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
   font-style: normal;
   font-weight: 800;
 }
@@ -713,7 +713,7 @@ button {
 
 .route-title small {
   color: #8598a7;
-  font-size: clamp(8px, 0.62vw, 9px);
+  font-size: clamp(10px, 0.72vw, 12px);
   white-space: nowrap;
 }
 
@@ -733,7 +733,7 @@ button {
   display: grid;
   align-items: end;
   color: #5f7586;
-  font-size: clamp(7px, 0.57vw, 9px);
+  font-size: clamp(9px, 0.7vw, 11px);
   white-space: nowrap;
 }
 
@@ -770,7 +770,7 @@ button {
 
 .distance-labels strong {
   color: #0061a9;
-  font-size: clamp(8px, 0.63vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
 }
 
 .route-line {
@@ -817,7 +817,7 @@ button {
   z-index: 3;
   left: 42%;
   bottom: -1px;
-  width: clamp(28px, 2.5vw, 38px);
+  width: clamp(20px, 1.75vw, 27px);
   aspect-ratio: 146 / 139;
   background: url("./assets/route-vehicles.svg") left top / 256.85% 100% no-repeat;
 }
@@ -830,7 +830,7 @@ button {
   align-self: end;
   justify-self: center;
   color: #f06a22;
-  font-size: clamp(7px, 0.6vw, 9px);
+  font-size: clamp(9px, 0.7vw, 11px);
   white-space: nowrap;
 }
 
@@ -839,7 +839,7 @@ button {
   z-index: 3;
   right: 10%;
   bottom: -5px;
-  width: clamp(31px, 2.9vw, 42px);
+  width: clamp(22px, 2.03vw, 29px);
   aspect-ratio: 147 / 139;
   background: url("./assets/route-vehicles.svg") right top / 255.11% 100% no-repeat;
 }
@@ -868,7 +868,7 @@ button {
   padding: 0 clamp(10px, 1vw, 16px);
   background: var(--blue);
   color: #fff;
-  font-size: clamp(7px, 0.58vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
   font-weight: 800;
 }
 
@@ -899,7 +899,7 @@ button {
 
 .metric-grid small {
   color: #758998;
-  font-size: clamp(7px, 0.57vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
 }
 
 .metric-grid strong {
@@ -923,7 +923,7 @@ button {
   padding: 0 clamp(16px, 1.5vw, 22px);
   background: #edf4f8;
   color: #5a7386;
-  font-size: clamp(7px, 0.62vw, 9px);
+  font-size: clamp(10px, 0.74vw, 12px);
 }
 
 .comparison-reason strong {
@@ -951,7 +951,7 @@ button {
 
 .schedule-heading > span {
   color: #6c8191;
-  font-size: clamp(8px, 0.65vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
   font-weight: 700;
 }
 
@@ -973,14 +973,14 @@ button {
   padding: 0 clamp(10px, 1.25vw, 18px);
   background: #f6fafc;
   color: #6d8291;
-  font-size: clamp(7px, 0.58vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
 }
 
 .schedule-row {
   position: relative;
   padding: 0 clamp(10px, 1.25vw, 18px);
   border-top: 1px solid #d7e2e9;
-  font-size: clamp(8px, 0.68vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
 }
 
 .schedule-row.active {
@@ -1003,7 +1003,7 @@ button {
   border: 1px solid #9bb1c1;
   border-radius: 50%;
   color: #4d6a7f;
-  font-size: clamp(7px, 0.58vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
 }
 
 .schedule-row.active .schedule-number {
@@ -1026,7 +1026,7 @@ button {
 
 .schedule-route small {
   color: #91a0ac;
-  font-size: clamp(7px, 0.55vw, 8px);
+  font-size: clamp(9px, 0.66vw, 11px);
 }
 
 .rail-text {
@@ -1044,7 +1044,7 @@ button {
   padding: 0 clamp(16px, 1.5vw, 22px);
   border-top: 2px solid var(--blue);
   color: #6b8090;
-  font-size: clamp(8px, 0.68vw, 10px);
+  font-size: clamp(10px, 0.74vw, 12px);
   font-weight: 700;
 }
 
@@ -1062,7 +1062,7 @@ button {
 .schedule-total small {
   margin-top: min(0.7vh, 7px);
   color: var(--green);
-  font-size: clamp(7px, 0.57vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
 }
 
 .estimate-ticket {
@@ -1113,7 +1113,7 @@ button {
 
 .estimate-ticket small {
   color: #8fd1ef;
-  font-size: clamp(7px, 0.56vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
   font-weight: 700;
 }
 
@@ -1122,7 +1122,7 @@ button {
   border: 1px solid rgba(153, 216, 247, 0.65);
   background: transparent;
   color: #fff;
-  font-size: clamp(7px, 0.62vw, 9px);
+  font-size: clamp(9px, 0.7vw, 11px);
   font-weight: 800;
 }
 
@@ -1150,7 +1150,7 @@ button {
   align-self: stretch;
   padding: min(0.7vh, 7px) 11px;
   background: var(--cyan);
-  font-size: clamp(8px, 0.65vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
 }
 
 .ticket-price > div {
@@ -1227,7 +1227,7 @@ button {
 
 .recommendation-title small {
   color: #83bed8;
-  font-size: clamp(7px, 0.56vw, 9px);
+  font-size: clamp(9px, 0.68vw, 11px);
   font-weight: 700;
 }
 
@@ -1247,7 +1247,7 @@ button {
   display: grid;
   gap: min(0.8vh, 8px);
   color: #b7c8d4;
-  font-size: clamp(8px, 0.67vw, 10px);
+  font-size: clamp(10px, 0.76vw, 12px);
 }
 
 .recommendation-copy strong {
