@@ -290,11 +290,27 @@
 }
 
 .records-section {
+  position: relative;
   min-width: 0;
   min-height: 0;
   display: grid;
   grid-template-rows: minmax(20px, 4.8%) minmax(36px, 7.8%) minmax(0, 1fr);
   gap: min(1vh, 9px);
+}
+
+.history-detail-feedback {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  max-width: 55%;
+  margin: 0;
+  overflow: hidden;
+  color: var(--orange);
+  font-size: clamp(10px, 0.74vw, 12px);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .records-section h2 {
@@ -503,6 +519,11 @@
   font-size: clamp(18px, 1.5vw, 22px);
   line-height: 1;
   text-decoration: none;
+}
+
+.detail-arrow:disabled {
+  cursor: wait;
+  opacity: 0.55;
 }
 
 .pagination {

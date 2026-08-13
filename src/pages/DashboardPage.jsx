@@ -589,9 +589,33 @@ function Recommendation({ result }) {
   );
 }
 
-export default function DashboardPage({ onNavigate }) {
+const getHistoryShipment = (historyDetail) => {
+  if (!historyDetail) return null;
+
+  const input = historyDetail.inputJson || {};
+  const output = historyDetail.outputJson || {};
+  const origin = typeof input.origin === "object" ? input.origin?.name : input.origin;
+  const destination = typeof input.destination === "object"
+    ? input.destination?.name
+    : input.destination;
+
+  return {
+    origin: origin || output.origin?.name || "",
+    destination: destination || output.destination?.name || "",
+    weight: String(input.cargo_weight_ton ?? output.cargo_weight_ton ?? ""),
+    departureDate: input.shipping_date || output.shipping_date || "",
+  };
+};
+
+export default function DashboardPage({ initialHistoryDetail, onNavigate }) {
+  const initialResult = initialHistoryDetail?.outputJson || defaultShippingResult;
+  const initialShipment = getHistoryShipment(initialHistoryDetail);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
-  const [result, setResult] = useState(defaultShippingResult);
+  const [result, setResult] = useState(initialResult);
+  const [estimate, setEstimate] = useState(() => initialHistoryDetail ? {
+    receptNo: initialHistoryDetail.receptNo,
+    analyzedAt: initialHistoryDetail.entDateTime,
+  } : null);
   const [includeComparison, setIncludeComparison] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -620,6 +644,7 @@ export default function DashboardPage({ onNavigate }) {
         signal: controller.signal,
       });
       setResult(nextResult);
+      setEstimate(null);
       setIncludeComparison(shouldCompare);
     } catch (requestError) {
       if (requestError.name !== "AbortError") {
@@ -686,12 +711,17 @@ export default function DashboardPage({ onNavigate }) {
   };
 
   return (
-    <DashboardFrame onNavigate={onNavigate}>
+    <DashboardFrame
+      estimate={estimate || undefined}
+      onNavigate={onNavigate}
+    >
       <div className={`workspace${panelCollapsed ? " panel-collapsed" : ""}`} id="dashboard-workspace">
         <PrimaryNav activePage="dashboard" onNavigate={onNavigate} />
         <ShipmentPanel
           collapsed={panelCollapsed}
           error={error}
+          initialPriority={initialHistoryDetail?.inputJson?.priority || initialResult.priority}
+          initialShipment={initialShipment}
           isLoading={isLoading}
           onSubmit={handleRecommendationRequest}
         />

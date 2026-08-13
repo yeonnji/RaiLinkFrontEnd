@@ -1,5 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { requestHistoryList, requestHistorySummary } from "../api/history.js";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  requestHistoryDetail,
+  requestHistoryList,
+  requestHistorySummary,
+} from "../api/history.js";
 import { DashboardFrame, PrimaryNav } from "../components/AppShell.jsx";
 
 const PAGE_SIZE = 5;
@@ -230,7 +234,7 @@ const getTransportPlan = (record) => {
   };
 };
 
-function HistoryRow({ record }) {
+function HistoryRow({ isOpening, onOpen, record }) {
   const track = getTrackType(record);
   const road = track === "road";
   const plan = getTransportPlan(record);
@@ -261,7 +265,14 @@ function HistoryRow({ record }) {
         <small>{formatListAmount(record.carbonSavingKg, "kgCO₂e")}</small>
       </div>
       <div className="analysis-date"><strong>{analyzedAt.date}</strong><small>{analyzedAt.time}</small></div>
-      <button className="detail-arrow" type="button" aria-label={`${record.originName} 분석 상세 보기`} data-recept-no={record.receptNo}>→</button>
+      <button
+        className="detail-arrow"
+        type="button"
+        aria-busy={isOpening}
+        aria-label={`${record.originName}에서 ${record.destinationName}까지 분석 상세 보기`}
+        disabled={isOpening}
+        onClick={() => onOpen(record.receptNo)}
+      >{isOpening ? "…" : "→"}</button>
     </article>
   );
 }
@@ -299,6 +310,9 @@ export default function HistoryPage({ onNavigate }) {
   });
   const [recordsError, setRecordsError] = useState("");
   const [isRecordsLoading, setIsRecordsLoading] = useState(true);
+  const [detailError, setDetailError] = useState("");
+  const [openingReceptNo, setOpeningReceptNo] = useState("");
+  const detailRequestRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -370,6 +384,13 @@ export default function HistoryPage({ onNavigate }) {
     return () => controller.abort();
   }, [debouncedQuery, filters, page]);
 
+  useEffect(
+    () => () => {
+      detailRequestRef.current?.abort();
+    },
+    [],
+  );
+
   const visiblePages = useMemo(
     () => getVisiblePages(page, pagination.totalPages),
     [page, pagination.totalPages],
@@ -378,6 +399,32 @@ export default function HistoryPage({ onNavigate }) {
   const handleFilterChange = (name, value) => {
     setFilters((current) => ({ ...current, [name]: value }));
     setPage(1);
+  };
+
+  const handleOpenDetail = async (receptNo) => {
+    if (!receptNo) return;
+
+    detailRequestRef.current?.abort();
+    const controller = new AbortController();
+    detailRequestRef.current = controller;
+    setOpeningReceptNo(receptNo);
+    setDetailError("");
+
+    try {
+      const historyDetail = await requestHistoryDetail(receptNo, {
+        signal: controller.signal,
+      });
+      onNavigate("dashboard", { historyDetail });
+    } catch (requestError) {
+      if (requestError.name !== "AbortError") {
+        setDetailError(requestError.message || "선택한 분석 기록을 불러오지 못했습니다.");
+      }
+    } finally {
+      if (detailRequestRef.current === controller) {
+        detailRequestRef.current = null;
+        setOpeningReceptNo("");
+      }
+    }
   };
 
   const openDashboard = (event) => {
@@ -415,6 +462,7 @@ export default function HistoryPage({ onNavigate }) {
 
           <section className="records-section" aria-busy={isRecordsLoading} aria-labelledby="records-title">
             <h2 id="records-title">분석 기록 <small>{pagination.totalItems.toLocaleString("ko-KR")}건</small></h2>
+            {detailError && <p className="history-detail-feedback" role="alert">{detailError}</p>}
 
             <div className="history-columns" aria-hidden="true">
               <span>분석 경로</span>
@@ -432,7 +480,14 @@ export default function HistoryPage({ onNavigate }) {
               ) : recordsError ? (
                 <div className="history-list-state error-state" role="alert">{recordsError}</div>
               ) : records.length ? (
-                records.map((record) => <HistoryRow key={record.receptNo} record={record} />)
+                records.map((record) => (
+                  <HistoryRow
+                    isOpening={openingReceptNo === record.receptNo}
+                    key={record.receptNo}
+                    onOpen={handleOpenDetail}
+                    record={record}
+                  />
+                ))
               ) : (
                 <div className="history-list-state">조건에 맞는 분석 기록이 없습니다.</div>
               )}
