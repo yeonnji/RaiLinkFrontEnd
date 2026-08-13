@@ -233,7 +233,9 @@ button {
   width: 21px;
   height: 21px;
   flex: 0 0 21px;
-  background: url("./assets/shipment-design.svg") center / 21px 21px no-repeat;
+  background: currentColor;
+  -webkit-mask: url("./assets/shipment-design.svg") center / 21px 21px no-repeat;
+  mask: url("./assets/shipment-design.svg") center / 21px 21px no-repeat;
 }
 
 .history-symbol {
