@@ -720,6 +720,13 @@ button {
   white-space: nowrap;
 }
 
+.place-labels {
+  position: relative;
+  z-index: 4;
+  align-items: start;
+  transform: translateY(-5px);
+}
+
 .place-labels.four {
   grid-template-columns: 24% 29% 28% 19%;
 }
@@ -792,46 +799,11 @@ button {
   position: absolute;
   z-index: 3;
   left: 42%;
-  bottom: 3px;
+  bottom: -1px;
   width: clamp(28px, 2.5vw, 38px);
-  height: clamp(21px, 2.1vw, 31px);
-  border: 3px solid #0c344d;
-  border-radius: 5px 5px 2px 2px;
-  background: #0c344d;
+  aspect-ratio: 146 / 139;
+  background: url("./assets/route-vehicles.svg") left top / 256.85% 100% no-repeat;
 }
-
-.train-icon::before {
-  content: "";
-  position: absolute;
-  left: 3px;
-  right: 3px;
-  top: 2px;
-  height: 9px;
-  background: linear-gradient(90deg, #c8f2f8 0 44%, transparent 44% 55%, #c8f2f8 55% 100%);
-  border-radius: 1px;
-}
-
-.train-icon i {
-  position: absolute;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  height: 2px;
-  background: #0c344d;
-}
-
-.train-icon b,
-.truck-icon b {
-  position: absolute;
-  bottom: -6px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #0c344d;
-}
-
-.train-icon b:nth-of-type(1) { left: 4px; }
-.train-icon b:nth-of-type(2) { right: 4px; }
 
 .road-route {
   grid-template-rows: 26% 42% 32%;
@@ -849,35 +821,11 @@ button {
   position: absolute;
   z-index: 3;
   right: 10%;
-  bottom: 4px;
+  bottom: -5px;
   width: clamp(31px, 2.9vw, 42px);
-  height: clamp(16px, 1.55vw, 23px);
-  border-radius: 1px;
-  background: #0c344d;
+  aspect-ratio: 147 / 139;
+  background: url("./assets/route-vehicles.svg") right top / 255.11% 100% no-repeat;
 }
-
-.truck-icon::before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  right: -10px;
-  width: 15px;
-  height: 23px;
-  background: #0c344d;
-  clip-path: polygon(0 0, 65% 0, 100% 38%, 100% 100%, 0 100%);
-}
-
-.truck-icon i {
-  position: absolute;
-  right: -6px;
-  top: -5px;
-  width: 7px;
-  height: 6px;
-  background: #bcf0f8;
-}
-
-.truck-icon b:nth-of-type(1) { left: 4px; }
-.truck-icon b:nth-of-type(2) { right: -7px; }
 
 .metric-card {
   position: relative;
