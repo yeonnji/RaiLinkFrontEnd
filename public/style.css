@@ -567,8 +567,8 @@ button {
 }
 
 .weight-input {
-  width: 2.8ch;
-  flex: 0 0 2.8ch;
+  width: 4.5ch;
+  flex: 0 0 4.5ch;
   appearance: textfield;
 }
 
@@ -705,6 +705,31 @@ button {
   color: #fff;
 }
 
+.generate-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
+.generate-button[aria-busy="true"] span {
+  animation: request-arrow 850ms ease-in-out infinite alternate;
+}
+
+@keyframes request-arrow {
+  to { transform: translateX(5px); }
+}
+
+.api-feedback {
+  display: -webkit-box;
+  margin: min(0.8vh, 8px) 0 0;
+  overflow: hidden;
+  color: #c84b2c;
+  font-size: clamp(10px, 0.72vw, 12px);
+  font-weight: 700;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .generate-button strong {
   margin: auto;
   font-size: clamp(11px, 0.92vw, 14px);
@@ -799,6 +824,10 @@ button {
 .comparison-panel {
   display: grid;
   grid-template-rows: 15% 38% 38% 9%;
+}
+
+.comparison-panel.single-option {
+  grid-template-rows: 15% 76% 9%;
 }
 
 .panel-heading {
@@ -961,6 +990,12 @@ button {
 
 .place-labels.two {
   grid-template-columns: 1fr 1fr;
+}
+
+.place-labels span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .distance-labels.three {
@@ -1132,6 +1167,13 @@ button {
   color: #35546b;
 }
 
+.comparison-reason span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .lower-grid {
   min-width: 0;
   min-height: 0;
@@ -1142,7 +1184,14 @@ button {
 
 .schedule-panel {
   display: grid;
-  grid-template-rows: 12% 53% 35%;
+}
+
+.schedule-panel.rail-schedule {
+  grid-template-rows: 12% 50% 23% 15%;
+}
+
+.schedule-panel.road-schedule {
+  grid-template-rows: 12% 30% 38% 20%;
 }
 
 .schedule-heading {
@@ -1161,6 +1210,10 @@ button {
   min-height: 0;
   display: grid;
   grid-template-rows: 22% repeat(3, 26%);
+}
+
+.schedule-table.single-route {
+  grid-template-rows: 30% minmax(0, 1fr);
 }
 
 .schedule-columns,
@@ -1227,8 +1280,11 @@ button {
 }
 
 .schedule-route small {
+  overflow: hidden;
   color: #91a0ac;
   font-size: clamp(9px, 0.66vw, 11px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .rail-text {
@@ -1237,6 +1293,59 @@ button {
 
 .schedule-row .cost {
   text-align: right;
+}
+
+.transport-details {
+  min-width: 0;
+  display: grid;
+  align-items: stretch;
+  border-top: 1px solid #d5e2ea;
+  background: #f5fafc;
+}
+
+.transport-details.rail-details {
+  grid-template-columns: 0.8fr 1fr 1.25fr 1fr 0.9fr;
+  border-left: 4px solid var(--cyan);
+}
+
+.transport-details.road-details {
+  grid-template-columns: repeat(4, 1fr);
+  border-left: 4px solid var(--orange);
+  background: #fff8f3;
+}
+
+.transport-details > span {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: min(0.55vh, 5px);
+  padding: 0 clamp(8px, 0.85vw, 13px);
+  border-right: 1px solid #d9e5ec;
+}
+
+.transport-details > span:last-child {
+  border-right: 0;
+}
+
+.transport-details small {
+  overflow: hidden;
+  color: #7a8f9e;
+  font-size: clamp(9px, 0.66vw, 11px);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transport-details strong {
+  overflow: hidden;
+  color: #075fa8;
+  font-size: clamp(10px, 0.82vw, 13px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transport-details.road-details strong {
+  color: #d95e25;
 }
 
 .schedule-total {
@@ -1257,7 +1366,7 @@ button {
 
 .schedule-total strong {
   color: #0662aa;
-  font-size: clamp(20px, 2vw, 29px);
+  font-size: clamp(17px, 1.7vw, 25px);
   line-height: 1;
 }
 
@@ -1351,8 +1460,11 @@ button {
 .ticket-price > b {
   align-self: stretch;
   padding: min(0.7vh, 7px) 11px;
+  overflow: hidden;
   background: var(--cyan);
   font-size: clamp(10px, 0.76vw, 12px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ticket-price > div {
@@ -1446,10 +1558,19 @@ button {
 }
 
 .recommendation-copy {
+  min-width: 0;
   display: grid;
   gap: min(0.8vh, 8px);
   color: #b7c8d4;
   font-size: clamp(10px, 0.76vw, 12px);
+}
+
+.recommendation-copy > span,
+.recommendation-copy > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .recommendation-copy strong {

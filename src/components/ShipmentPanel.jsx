@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 
 const storageKey = "railink-shipment-conditions";
 const defaultShipment = {
-  origin: "부산항",
-  destination: "평택공장",
-  weight: "20",
-  departureDate: "2026-08-08",
+  origin: "서울역",
+  destination: "부산항국제여객터미널",
+  weight: "50",
+  departureDate: "2026-08-15",
 };
 
 const readStoredShipment = () => {
@@ -26,9 +26,9 @@ function FieldRow({ accent = false, children, value }) {
   );
 }
 
-export default function ShipmentPanel({ collapsed }) {
+export default function ShipmentPanel({ collapsed, error, isLoading, onSubmit }) {
   const [shipment, setShipment] = useState(readStoredShipment);
-  const [priority, setPriority] = useState("time");
+  const [priority, setPriority] = useState("1");
   const [includeComparison, setIncludeComparison] = useState(true);
   const dateInputRef = useRef(null);
   const panelRef = useRef(null);
@@ -52,7 +52,28 @@ export default function ShipmentPanel({ collapsed }) {
   const clampWeight = () => {
     const value = Number(shipment.weight);
     if (!Number.isFinite(value)) return;
-    updateShipment("weight", String(Math.min(24, Math.max(1, value))));
+    updateShipment("weight", String(Math.min(999, Math.max(1, value))));
+  };
+
+  const canSubmit =
+    shipment.origin.trim() &&
+    shipment.destination.trim() &&
+    Number(shipment.weight) > 0 &&
+    shipment.departureDate;
+
+  const submitRecommendation = () => {
+    if (!canSubmit || isLoading) return;
+
+    onSubmit({
+      request: {
+        origin: shipment.origin.trim(),
+        destination: shipment.destination.trim(),
+        cargo_weight_ton: Number(shipment.weight),
+        shipping_date: shipment.departureDate,
+        priority,
+      },
+      includeComparison,
+    });
   };
 
   const openCalendar = () => {
@@ -81,7 +102,7 @@ export default function ShipmentPanel({ collapsed }) {
       <section className="shipment-section" aria-labelledby="shipment-title">
         <span className="eyebrow">SHIPMENT INPUT</span>
         <h1 id="shipment-title">운송 조건</h1>
-        <p className="help-text">필수 입력 5개 · 자동 저장됨</p>
+        <p className="help-text">검색어 입력 · 자동 저장됨</p>
 
         <div className="field-list">
           <FieldRow accent value={shipment.origin}>
@@ -127,7 +148,7 @@ export default function ShipmentPanel({ collapsed }) {
                     name="weight"
                     value={shipment.weight}
                     min="1"
-                    max="24"
+                    max="999"
                     step="1"
                     inputMode="numeric"
                     required
@@ -139,7 +160,7 @@ export default function ShipmentPanel({ collapsed }) {
                   <b>톤</b>
                 </span>
               </span>
-              <em id="weight-limit">최대 24톤</em>
+              <em id="weight-limit">1톤 이상</em>
             </span>
           </FieldRow>
 
@@ -180,10 +201,10 @@ export default function ShipmentPanel({ collapsed }) {
 
         <div className="priority-grid">
           {[
-            ["cost", "비용우선"],
-            ["time", "시간우선"],
-            ["environment", "환경우선"],
-            ["balanced", "균형형"],
+            ["1", "비용우선"],
+            ["2", "시간우선"],
+            ["3", "환경우선"],
+            ["4", "균형형"],
           ].map(([value, label]) => (
             <label key={value}>
               <input
@@ -207,10 +228,17 @@ export default function ShipmentPanel({ collapsed }) {
           <span>철도 · 도로 비교 포함</span>
         </label>
 
-        <button className="generate-button" type="button">
-          <strong>AI 추천 운송안 생성</strong>
+        <button
+          className="generate-button"
+          type="button"
+          disabled={!canSubmit || isLoading}
+          aria-busy={isLoading}
+          onClick={submitRecommendation}
+        >
+          <strong>{isLoading ? "추천안 계산 중…" : "AI 추천 운송안 생성"}</strong>
           <span aria-hidden="true">⟶</span>
         </button>
+        {error && <p className="api-feedback" role="alert">{error}</p>}
       </section>
     </aside>
   );
