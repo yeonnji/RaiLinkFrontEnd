@@ -7,6 +7,7 @@ const getPageFromPath = () =>
 
 export default function App() {
   const [page, setPage] = useState(getPageFromPath);
+  const [historyDetail, setHistoryDetail] = useState(null);
 
   useEffect(() => {
     const handlePopState = () => setPage(getPageFromPath());
@@ -21,10 +22,13 @@ export default function App() {
         : "RAILINK | 철도 복합물류 AI 플랫폼";
   }, [page]);
 
-  const navigate = useCallback((nextPage) => {
+  const navigate = useCallback((nextPage, options = {}) => {
     const nextPath = nextPage === "history" ? "/history" : "/";
     if (window.location.pathname !== nextPath) {
       window.history.pushState({}, "", nextPath);
+    }
+    if (nextPage === "dashboard") {
+      setHistoryDetail(options.historyDetail || null);
     }
     setPage(nextPage);
   }, []);
@@ -32,6 +36,10 @@ export default function App() {
   return page === "history" ? (
     <HistoryPage onNavigate={navigate} />
   ) : (
-    <DashboardPage onNavigate={navigate} />
+    <DashboardPage
+      initialHistoryDetail={historyDetail}
+      key={historyDetail?.receptNo || "new-analysis"}
+      onNavigate={navigate}
+    />
   );
 }

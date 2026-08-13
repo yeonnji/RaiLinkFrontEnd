@@ -26,9 +26,23 @@ function FieldRow({ accent = false, children, value }) {
   );
 }
 
-export default function ShipmentPanel({ collapsed, error, isLoading, onSubmit }) {
-  const [shipment, setShipment] = useState(readStoredShipment);
-  const [priority, setPriority] = useState("1");
+export default function ShipmentPanel({
+  collapsed,
+  error,
+  initialPriority,
+  initialShipment,
+  isLoading,
+  onSubmit,
+}) {
+  const [shipment, setShipment] = useState(() => ({
+    ...readStoredShipment(),
+    ...(initialShipment || {}),
+  }));
+  const [priority, setPriority] = useState(
+    ["1", "2", "3", "4"].includes(String(initialPriority))
+      ? String(initialPriority)
+      : "1",
+  );
   const [includeComparison, setIncludeComparison] = useState(true);
   const dateInputRef = useRef(null);
   const panelRef = useRef(null);

@@ -29,7 +29,22 @@ function InternalLink({ children, className, current, label, onNavigate, page })
   );
 }
 
-export function Topbar({ history = false, onNavigate }) {
+const formatEstimateDate = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const datePart = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+    .map((part, index) => index === 0 ? part : String(part).padStart(2, "0"))
+    .join(".");
+  const timePart = date.toLocaleTimeString("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  return `${datePart} ${timePart}`;
+};
+
+export function Topbar({ estimate, history = false, onNavigate }) {
   return (
     <header className="topbar">
       <InternalLink
@@ -44,14 +59,23 @@ export function Topbar({ history = false, onNavigate }) {
       <div className="topbar-content">
         <div className="brand-copy">
           <span>철도 중심 복합물류 AI 의사결정 플랫폼</span>
-          <strong>RAILINK</strong>
+          <img
+            src="/assets/railink-logo-train-track.png"
+            alt="RAILINK"
+            width="1449"
+            height="267"
+          />
         </div>
 
         <div className="topbar-status">
           {!history && (
             <div className="estimate-id">
-              <strong>견적번호 KR-260806-0217</strong>
-              <span>2026.08.06 09:40 기준</span>
+              <strong>견적번호 {estimate?.receptNo || "KR-260806-0217"}</strong>
+              <span>
+                {estimate?.analyzedAt
+                  ? `${formatEstimateDate(estimate.analyzedAt)} 분석`
+                  : "2026.08.06 09:40 기준"}
+              </span>
             </div>
           )}
           <div className="live-pill">
@@ -99,10 +123,10 @@ export function PrimaryNav({ activePage, history = false, onNavigate }) {
   );
 }
 
-export function DashboardFrame({ children, history = false, onNavigate }) {
+export function DashboardFrame({ children, estimate, history = false, onNavigate }) {
   return (
     <div className={`dashboard${history ? " history-dashboard" : ""}`}>
-      <Topbar history={history} onNavigate={onNavigate} />
+      <Topbar estimate={estimate} history={history} onNavigate={onNavigate} />
       {children}
     </div>
   );
