@@ -188,6 +188,7 @@ button {
 }
 
 .nav-item {
+  position: relative;
   width: 100%;
   height: clamp(77px, 10.8vh, 104px);
   display: flex;
@@ -207,9 +208,11 @@ button {
 .nav-item.active::before {
   content: "";
   position: absolute;
-  top: clamp(37px, 4vh, 39px);
+  left: 50%;
+  top: 50%;
   width: clamp(54px, 4.1vw, 60px);
   height: clamp(58px, 6.1vh, 60px);
+  transform: translate(-50%, -50%);
   border-radius: 13px;
   background: #fff;
 }
@@ -226,21 +229,11 @@ button {
   height: 23px;
 }
 
-.document-symbol::before {
-  content: "";
-  position: absolute;
-  inset: 3px 4px;
-  border: 1.5px solid currentColor;
-  border-radius: 1px;
-}
-
-.document-symbol::after {
-  content: "··";
-  position: absolute;
-  inset: 1px 0 0;
-  text-align: center;
-  font-size: 15px;
-  font-weight: 900;
+.shipment-design-icon {
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  background: url("./assets/shipment-design.svg") center / 21px 21px no-repeat;
 }
 
 .history-symbol {
